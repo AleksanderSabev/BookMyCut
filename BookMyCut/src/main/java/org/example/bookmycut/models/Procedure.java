@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "service")
-public class Service {
+public class Procedure {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,9 +38,9 @@ public class Service {
     @OneToMany(mappedBy = "service", cascade = CascadeType.ALL)
     private List<Appointment> appointments;
 
-    public Service(String name,
-                   int durationMinutes,
-                   double price) {
+    public Procedure(String name,
+                     int durationMinutes,
+                     double price) {
         this.name = name;
         this.durationMinutes = durationMinutes;
         this.price = price;

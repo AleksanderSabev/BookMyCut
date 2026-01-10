@@ -38,7 +38,7 @@ public class Employee {
             joinColumns = @JoinColumn(name = "employee_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id")
     )
-    private List<Service> services;
+    private List<Procedure> procedures;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
     private List<EmployeeSchedule> schedules;

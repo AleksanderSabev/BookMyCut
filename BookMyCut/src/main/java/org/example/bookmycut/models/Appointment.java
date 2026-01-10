@@ -24,7 +24,7 @@ public class Appointment {
 
     @ManyToOne
     @JoinColumn(name = "service_id", nullable = false)
-    private Service service;
+    private Procedure procedure;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -45,12 +45,12 @@ public class Appointment {
     private LocalDateTime createdAt;
 
     public Appointment(Employee employee,
-                       Service service,
+                       Procedure procedure,
                        AppUser user,
                        LocalDateTime startDatetime,
                        LocalDateTime endDatetime) {
         this.employee = employee;
-        this.service = service;
+        this.procedure = procedure;
         this.user = user;
         this.startDatetime = startDatetime;
         this.endDatetime = endDatetime;
