@@ -14,4 +14,6 @@ public interface EmployeeRepository extends
     Optional<Employee> findByEmail(String email);
 
     boolean existsByEmail(String email);
+
+    Optional<Employee> findByName(String name);
 }

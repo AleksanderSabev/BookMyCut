@@ -1,5 +1,6 @@
 package org.example.bookmycut.services.contracts;
 
+import org.example.bookmycut.dtos.AppointmentDto;
 import org.example.bookmycut.models.Appointment;
 
 import java.time.LocalDate;
@@ -8,9 +9,9 @@ import java.util.List;
 
 public interface AppointmentService {
 
-    Appointment bookAppointment(
+    AppointmentDto bookAppointment(
             Long employeeId,
-            Long serviceId,
+            Long procedureId,
             Long userId,
             LocalDateTime startDateTime
     );

@@ -1,0 +1,86 @@
+package org.example.bookmycut.services;
+
+import org.example.bookmycut.dtos.AppointmentDto;
+import org.example.bookmycut.exceptions.EmployeeUnavailableException;
+import org.example.bookmycut.exceptions.EntityNotFoundException;
+import org.example.bookmycut.helpers.AppointmentMapper;
+import org.example.bookmycut.models.AppUser;
+import org.example.bookmycut.models.Appointment;
+import org.example.bookmycut.models.Employee;
+import org.example.bookmycut.models.Procedure;
+import org.example.bookmycut.repositories.AppUserRepository;
+import org.example.bookmycut.repositories.AppointmentRepository;
+import org.example.bookmycut.repositories.EmployeeRepository;
+import org.example.bookmycut.repositories.ProcedureRepository;
+import org.example.bookmycut.services.contracts.AppointmentService;
+import org.example.bookmycut.services.contracts.AvailabilityService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
+public class AppointmentServiceImpl implements AppointmentService {
+
+    private final AppointmentRepository appointmentRepository;
+    private final EmployeeRepository employeeRepository;
+    private final ProcedureRepository procedureRepository;
+    private final AvailabilityService availabilityService;
+    private final AppUserRepository userRepository;
+    private final AppointmentMapper appointmentMapper;
+
+    @Autowired
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, EmployeeRepository employeeRepository, ProcedureRepository procedureRepository, AvailabilityService availabilityService, AppUserRepository userRepository, AppointmentMapper appointmentMapper) {
+        this.appointmentRepository = appointmentRepository;
+        this.employeeRepository = employeeRepository;
+        this.procedureRepository = procedureRepository;
+        this.availabilityService = availabilityService;
+        this.userRepository = userRepository;
+        this.appointmentMapper = appointmentMapper;
+    }
+
+    @Override
+    public AppointmentDto bookAppointment(Long employeeId, Long procedureId, Long userId, LocalDateTime startDateTime) {
+        //validation
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new EntityNotFoundException("Employee", employeeId));
+
+        Procedure procedure = procedureRepository.findById(procedureId)
+                .orElseThrow(() -> new EntityNotFoundException("Procedure",procedureId));
+
+        AppUser user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User", userId));
+        // check availability
+
+        LocalDateTime endDateTime = startDateTime.plusMinutes(procedure.getDurationMinutes());
+        if(!availabilityService.isEmployeeAvailable(employeeId,
+                startDateTime,
+                endDateTime)){
+
+            throw new EmployeeUnavailableException("Employee is not available this time!");
+        }
+        //create appointment
+        Appointment appointment = new Appointment(employee, procedure, user, startDateTime, endDateTime);
+        appointmentRepository.save(appointment);
+        //convert to Dto
+
+        return appointmentMapper.toDto(appointment);
+    }
+
+    @Override
+    public void cancelAppointment(Long appointmentId) {
+
+    }
+
+    @Override
+    public List<Appointment> getAppointmentsForEmployee(Long employeeId, LocalDate date) {
+        return List.of();
+    }
+
+    @Override
+    public List<Appointment> getAppointmentsForUser(Long userId) {
+        return List.of();
+    }
+}

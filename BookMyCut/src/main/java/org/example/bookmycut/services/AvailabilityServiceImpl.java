@@ -1,6 +1,6 @@
 package org.example.bookmycut.services;
 
-import org.example.bookmycut.exceptions.EmployeeNotWorkingThisDayException;
+import org.example.bookmycut.exceptions.EmployeeUnavailableException;
 import org.example.bookmycut.models.EmployeeSchedule;
 import org.example.bookmycut.repositories.AppointmentRepository;
 import org.example.bookmycut.repositories.EmployeeScheduleRepository;
@@ -24,9 +24,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
     private final String START_AFTER_END = "Start time must be before end time!";
 
     private final EmployeeScheduleRepository scheduleRepository;
-
     private final EmployeeTimeOffRepository timeOffRepository;
-
     private final AppointmentRepository appointmentRepository;
 
     @Autowired
@@ -46,7 +44,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
         DayOfWeek dayOfWeek = start.getDayOfWeek();
 
         EmployeeSchedule daySchedule = scheduleRepository.findByEmployeeIdAndDayOfWeek(employeeId, dayOfWeek.getValue())
-                .orElseThrow(() -> new EmployeeNotWorkingThisDayException(NOT_WORKING));
+                .orElseThrow(() -> new EmployeeUnavailableException(NOT_WORKING));
 
         if (start.toLocalTime().isBefore(daySchedule.getStartTime()) ||
                 end.toLocalTime().isAfter(daySchedule.getEndTime())) return false;
@@ -65,7 +63,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
         DayOfWeek dayOfWeek = date.getDayOfWeek();
 
         EmployeeSchedule daySchedule = scheduleRepository.findByEmployeeIdAndDayOfWeek(employeeId, dayOfWeek.getValue())
-                .orElseThrow(() -> new EmployeeNotWorkingThisDayException(NOT_WORKING));
+                .orElseThrow(() -> new EmployeeUnavailableException(NOT_WORKING));
 
         LocalTime startTime = daySchedule.getStartTime();
         LocalTime endTime = daySchedule.getEndTime();
