@@ -12,7 +12,7 @@ public interface EmployeeTimeOffRepository
 
     List<EmployeeTimeOff> findByEmployeeId(Long employeeId);
 
-    List<EmployeeTimeOff> findByEmployeeIdAndStartDatetimeLessThanEqualAndEndDatetimeGreaterThanEqual(
+    boolean existsByEmployeeIdAndStartDatetimeLessThanAndEndDatetimeGreaterThan(
             Long employeeId,
             LocalDateTime end,
             LocalDateTime start
