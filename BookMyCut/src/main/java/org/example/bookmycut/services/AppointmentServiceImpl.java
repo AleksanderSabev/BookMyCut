@@ -43,7 +43,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentDto bookAppointment(Long employeeId, Long procedureId, Long userId, LocalDateTime startDateTime) {
-        //validation
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("Employee", employeeId));
 
@@ -52,7 +51,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         AppUser user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User", userId));
-        // check availability
 
         LocalDateTime endDateTime = startDateTime.plusMinutes(procedure.getDurationMinutes());
         if(!availabilityService.isEmployeeAvailable(employeeId,
@@ -61,10 +59,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
             throw new EmployeeUnavailableException("Employee is not available this time!");
         }
-        //create appointment
         Appointment appointment = new Appointment(employee, procedure, user, startDateTime, endDateTime);
         appointmentRepository.save(appointment);
-        //convert to Dto
 
         return appointmentMapper.toDto(appointment);
     }
