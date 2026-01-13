@@ -1,6 +1,8 @@
 package org.example.bookmycut.repositories;
 
 import lombok.NonNull;
+import org.example.bookmycut.enums.AppointmentStatus;
+import org.example.bookmycut.models.AppUser;
 import org.example.bookmycut.models.Appointment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -25,4 +27,8 @@ public interface AppointmentRepository extends
             LocalDateTime end,
             LocalDateTime start
     );
+
+    List<Appointment >findByStatusAndEndDatetimeBefore(AppointmentStatus status, LocalDateTime dateTime);
+
+    List<Appointment> findByUserAndStatus(AppUser user, AppointmentStatus status);
 }

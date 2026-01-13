@@ -24,4 +24,6 @@ public interface AppointmentService {
     );
 
     List<Appointment> getAppointmentsForUser(Long userId);
+
+    void markPastAppointmentsAsCompleted();
 }

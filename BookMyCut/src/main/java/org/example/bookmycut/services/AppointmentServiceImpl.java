@@ -16,6 +16,7 @@ import org.example.bookmycut.repositories.ProcedureRepository;
 import org.example.bookmycut.services.contracts.AppointmentService;
 import org.example.bookmycut.services.contracts.AvailabilityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,11 +84,32 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<Appointment> getAppointmentsForEmployee(Long employeeId, LocalDate date) {
-        return List.of();
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new EntityNotFoundException("Employee", employeeId));
+        LocalDateTime startOfDay = date.atStartOfDay();
+        LocalDateTime endOfDay = date.atTime(23,59,59);
+        return appointmentRepository
+                .findByEmployeeIdAndStartDatetimeBetween(employeeId,startOfDay,endOfDay)
+                .stream().filter(a -> !a.getStatus().equals(AppointmentStatus.CANCELLED))
+                .toList();
     }
 
     @Override
     public List<Appointment> getAppointmentsForUser(Long userId) {
-        return List.of();
+        AppUser user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User", userId));
+        return appointmentRepository.findByUserAndStatus(user, AppointmentStatus.SCHEDULED);
+    }
+
+    @Transactional
+    @Scheduled(fixedRate = 60000) // every minute
+    public void markPastAppointmentsAsCompleted() {
+        List<Appointment> pastAppointments = appointmentRepository
+                .findByStatusAndEndDatetimeBefore(AppointmentStatus.SCHEDULED, LocalDateTime.now());
+
+        if (!pastAppointments.isEmpty()) {
+            pastAppointments.forEach(a -> a.setStatus(AppointmentStatus.COMPLETED));
+            appointmentRepository.saveAll(pastAppointments);
+        }
     }
 }
