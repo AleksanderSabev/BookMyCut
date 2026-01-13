@@ -1,6 +1,7 @@
 package org.example.bookmycut.services;
 
 import org.example.bookmycut.dtos.AppointmentDto;
+import org.example.bookmycut.enums.AppointmentStatus;
 import org.example.bookmycut.exceptions.EmployeeUnavailableException;
 import org.example.bookmycut.exceptions.EntityNotFoundException;
 import org.example.bookmycut.helpers.AppointmentMapper;
@@ -16,6 +17,7 @@ import org.example.bookmycut.services.contracts.AppointmentService;
 import org.example.bookmycut.services.contracts.AvailabilityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,6 +43,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentMapper = appointmentMapper;
     }
 
+    @Transactional
     @Override
     public AppointmentDto bookAppointment(Long employeeId, Long procedureId, Long userId, LocalDateTime startDateTime) {
         Employee employee = employeeRepository.findById(employeeId)
@@ -65,9 +68,17 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentMapper.toDto(appointment);
     }
 
+    @Transactional
     @Override
     public void cancelAppointment(Long appointmentId) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new EntityNotFoundException("Appointment", appointmentId));
 
+        //TODO check appointment's ownership by the user who wants to cancel it
+
+        appointment.setStatus(AppointmentStatus.CANCELLED);
+
+        appointmentRepository.save(appointment);
     }
 
     @Override
