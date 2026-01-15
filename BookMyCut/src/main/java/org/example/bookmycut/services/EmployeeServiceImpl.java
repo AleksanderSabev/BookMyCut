@@ -1,6 +1,6 @@
 package org.example.bookmycut.services;
 
-import jakarta.persistence.EntityNotFoundException;
+import org.example.bookmycut.exceptions.EntityNotFoundException;
 import org.example.bookmycut.dtos.EmployeeDto;
 import org.example.bookmycut.dtos.ProcedureDto;
 import org.example.bookmycut.helpers.mappers.EmployeeMapper;
@@ -11,6 +11,7 @@ import org.example.bookmycut.repositories.ProcedureRepository;
 import org.example.bookmycut.services.contracts.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +34,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         this.employeeMapper = employeeMapper;
     }
 
-
+    @Transactional
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
         List<Procedure> procedures = Collections.emptyList();
@@ -45,7 +46,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 List<Long> missingIds = employeeDto.getProcedureIds().stream()
                         .filter(id -> !foundIds.contains(id))
                         .toList();
-                throw new EntityNotFoundException("Procedures not found with ids: " + missingIds);
+                throw new jakarta.persistence.EntityNotFoundException("Procedures not found with ids: " + missingIds);
             }
         }
 
@@ -58,12 +59,18 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public List<EmployeeDto> getAllEmployees() {
-        return List.of();
+        return employeeRepository.findAll()
+                .stream()
+                .map(employeeMapper::toDto)
+                .toList();
     }
 
     @Override
     public EmployeeDto getEmployeeById(Long id) {
-        return null;
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Employee", id));
+
+        return employeeMapper.toDto(employee);
     }
 
     @Override
