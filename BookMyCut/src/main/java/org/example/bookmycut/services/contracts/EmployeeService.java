@@ -1,20 +1,21 @@
 package org.example.bookmycut.services.contracts;
 
-import org.example.bookmycut.models.Employee;
-import org.example.bookmycut.models.Procedure;
+import org.example.bookmycut.dtos.EmployeeDto;
+import org.example.bookmycut.dtos.ProcedureDto;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface EmployeeService {
 
-    Employee createEmployee(Employee employee);
+    EmployeeDto createEmployee(EmployeeDto employeeDto);
 
-    List<Employee> getAllEmployees();
+    List<EmployeeDto> getAllEmployees();
 
-    Optional<Employee> getEmployeeById(Long id);
+    EmployeeDto getEmployeeById(Long id);
 
-    void assignServiceToEmployee(Long employeeId, Long serviceId);
+    void assignProcedureToEmployee(Long employeeId, Long procedureId);
 
-    List<Procedure> getServicesForEmployee(Long employeeId);
+    List<ProcedureDto> getProceduresForEmployee(Long employeeId);
+
+    void deleteEmployee(Long id);
 }
