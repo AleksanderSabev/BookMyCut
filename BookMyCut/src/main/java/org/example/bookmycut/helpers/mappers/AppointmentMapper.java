@@ -1,4 +1,4 @@
-package org.example.bookmycut.helpers;
+package org.example.bookmycut.helpers.mappers;
 
 import org.example.bookmycut.dtos.AppointmentDto;
 import org.example.bookmycut.models.Appointment;

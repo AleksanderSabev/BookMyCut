@@ -1,15 +1,18 @@
 package org.example.bookmycut.services.contracts;
 
-import org.example.bookmycut.models.Procedure;
+import org.example.bookmycut.dtos.ProcedureDto;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ProcedureCatalogService {
 
-    Procedure createService(Procedure procedure);
+    ProcedureDto createProcedure(ProcedureDto procedureDto);
 
-    List<Procedure> getAllServices();
+    List<ProcedureDto> getAllProcedures();
 
-    Optional<Procedure> getServiceById(Long id);
+    ProcedureDto getProcedureById(Long id);
+
+    ProcedureDto updateProcedure(Long id, ProcedureDto procedureDto);
+
+    void deleteProcedure(Long id);
 }

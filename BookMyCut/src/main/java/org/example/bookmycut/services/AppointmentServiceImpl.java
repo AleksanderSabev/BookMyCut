@@ -4,7 +4,7 @@ import org.example.bookmycut.dtos.AppointmentDto;
 import org.example.bookmycut.enums.AppointmentStatus;
 import org.example.bookmycut.exceptions.EmployeeUnavailableException;
 import org.example.bookmycut.exceptions.EntityNotFoundException;
-import org.example.bookmycut.helpers.AppointmentMapper;
+import org.example.bookmycut.helpers.mappers.AppointmentMapper;
 import org.example.bookmycut.models.AppUser;
 import org.example.bookmycut.models.Appointment;
 import org.example.bookmycut.models.Employee;

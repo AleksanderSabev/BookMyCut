@@ -31,4 +31,6 @@ public interface AppointmentRepository extends
     List<Appointment >findByStatusAndEndDatetimeBefore(AppointmentStatus status, LocalDateTime dateTime);
 
     List<Appointment> findByUserAndStatus(AppUser user, AppointmentStatus status);
+
+    boolean existsByProcedureId(Long procedureId);
 }
