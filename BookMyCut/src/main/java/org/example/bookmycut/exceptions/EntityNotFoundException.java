@@ -1,5 +1,6 @@
 package org.example.bookmycut.exceptions;
 
+import java.time.DayOfWeek;
 import java.util.List;
 
 public class EntityNotFoundException extends RuntimeException {
@@ -17,5 +18,9 @@ public class EntityNotFoundException extends RuntimeException {
 
     public EntityNotFoundException(String type, List<Long> missingIds) {
         this(type, "id", missingIds);
+    }
+
+    public EntityNotFoundException(String employeeName, DayOfWeek dayOfWeek) {
+        this("Schedule of employee %s for %s not found", employeeName, String.valueOf(dayOfWeek));
     }
 }

@@ -12,4 +12,5 @@ public class DuplicateEntityException extends RuntimeException{
     public DuplicateEntityException(String type){
         super(String.format("%s already in the collection.", type));
     }
+
 }

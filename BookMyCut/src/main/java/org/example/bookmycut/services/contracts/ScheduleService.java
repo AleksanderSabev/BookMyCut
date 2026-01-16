@@ -1,18 +1,25 @@
 package org.example.bookmycut.services.contracts;
 
-import org.example.bookmycut.models.EmployeeSchedule;
+import org.example.bookmycut.dtos.ScheduleDto;
 
-import java.time.LocalTime;
 import java.util.List;
 
 public interface ScheduleService {
 
-    void addSchedule(
-            Long employeeId,
-            int dayOfWeek,
-            LocalTime startTime,
-            LocalTime endTime
-    );
+    ScheduleDto addSchedule(ScheduleDto scheduleDTO);
 
-    List<EmployeeSchedule> getScheduleForEmployee(Long employeeId);
+    List<ScheduleDto> getScheduleForEmployee(Long employeeId);
+
+    ScheduleDto removeSchedule(ScheduleDto scheduleDTO);
+
+
+    ScheduleDto updateSchedule(ScheduleDto scheduleDTO);
+
+
+    List<ScheduleDto> getScheduleForEmployeeByDay(Long employeeId, int dayOfWeek);
+
+
+    List<ScheduleDto> getAllSchedules();
+
+
 }
