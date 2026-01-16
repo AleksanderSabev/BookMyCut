@@ -7,6 +7,7 @@ import org.example.bookmycut.enums.Role;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -38,7 +39,7 @@ public class AppUser {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Appointment> appointments;
+    private List<Appointment> appointments = new ArrayList<>();
 
     public AppUser(String username,
                    String email,

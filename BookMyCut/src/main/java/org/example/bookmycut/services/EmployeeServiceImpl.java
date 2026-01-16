@@ -1,9 +1,12 @@
 package org.example.bookmycut.services;
 
+import org.example.bookmycut.enums.AppointmentStatus;
+import org.example.bookmycut.exceptions.EntityHasAppointmentsException;
 import org.example.bookmycut.exceptions.EntityNotFoundException;
 import org.example.bookmycut.dtos.EmployeeDto;
 import org.example.bookmycut.dtos.ProcedureDto;
 import org.example.bookmycut.helpers.mappers.EmployeeMapper;
+import org.example.bookmycut.helpers.mappers.ProcedureMapper;
 import org.example.bookmycut.models.Employee;
 import org.example.bookmycut.models.Procedure;
 import org.example.bookmycut.repositories.EmployeeRepository;
@@ -25,13 +28,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeMapper employeeMapper;
 
+    private final ProcedureMapper procedureMapper;
+
     @Autowired
     public EmployeeServiceImpl(EmployeeRepository employeeRepository,
                                ProcedureRepository procedureRepository,
-                               EmployeeMapper employeeMapper) {
+                               EmployeeMapper employeeMapper, ProcedureMapper procedureMapper) {
         this.employeeRepository = employeeRepository;
         this.procedureRepository = procedureRepository;
         this.employeeMapper = employeeMapper;
+        this.procedureMapper = procedureMapper;
     }
 
     @Transactional
@@ -46,7 +52,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 List<Long> missingIds = employeeDto.getProcedureIds().stream()
                         .filter(id -> !foundIds.contains(id))
                         .toList();
-                throw new jakarta.persistence.EntityNotFoundException("Procedures not found with ids: " + missingIds);
+                throw new EntityNotFoundException("Procedures", missingIds);
             }
         }
 
@@ -57,6 +63,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeMapper.toDto(saved);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<EmployeeDto> getAllEmployees() {
         return employeeRepository.findAll()
@@ -65,6 +72,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public EmployeeDto getEmployeeById(Long id) {
         Employee employee = employeeRepository.findById(id)
@@ -73,18 +81,45 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeMapper.toDto(employee);
     }
 
+    @Transactional
     @Override
     public void assignProcedureToEmployee(Long employeeId, Long procedureId) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new EntityNotFoundException("Employee", employeeId));
+        Procedure procedure = procedureRepository.findById(procedureId)
+                .orElseThrow(() -> new EntityNotFoundException("Procedure", procedureId));
+        employee.addProcedure(procedure);
+
+        employeeRepository.save(employee);
 
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ProcedureDto> getProceduresForEmployee(Long employeeId) {
-        return List.of();
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new EntityNotFoundException("Employee", employeeId));
+
+        return employee.getProcedures().stream()
+                .map(procedureMapper::toDto)
+                .toList();
     }
 
+    @Transactional
     @Override
     public void deleteEmployee(Long id) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Employee", id));
 
+        boolean hasActiveAppointments = employee.getAppointments().stream()
+                .anyMatch(a -> a.getStatus() == AppointmentStatus.SCHEDULED);
+
+        if (hasActiveAppointments) {
+            throw new EntityHasAppointmentsException("Employee", id);
+        }
+
+        employee.getProcedures().clear();
+
+        employeeRepository.delete(employee);
     }
 }

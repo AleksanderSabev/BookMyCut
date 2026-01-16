@@ -2,7 +2,7 @@ package org.example.bookmycut.services;
 
 import org.example.bookmycut.dtos.ProcedureDto;
 import org.example.bookmycut.exceptions.EntityNotFoundException;
-import org.example.bookmycut.exceptions.ProcedureHasAppointmentsException;
+import org.example.bookmycut.exceptions.EntityHasAppointmentsException;
 import org.example.bookmycut.helpers.mappers.ProcedureMapper;
 import org.example.bookmycut.models.Procedure;
 import org.example.bookmycut.repositories.AppointmentRepository;
@@ -75,7 +75,7 @@ public class ProcedureCatalogServiceImpl implements ProcedureCatalogService {
             throw new EntityNotFoundException("Procedure", id);
 
         if(appointmentRepository.existsByProcedureId(id)){
-            throw new ProcedureHasAppointmentsException(id);
+            throw new EntityHasAppointmentsException("Procedure",id);
         }
 
         procedureRepository.deleteById(id);

@@ -27,6 +27,9 @@ import java.util.List;
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
 
+    private final String PROCEDURE_NOT_IN_THE_EMPLOYEES_LIST = "This employee can't perform this procedure!";
+    private final String EMPLOYEE_UNAVAILABLE = "Employee is not available this time!";
+
     private final AppointmentRepository appointmentRepository;
     private final EmployeeRepository employeeRepository;
     private final ProcedureRepository procedureRepository;
@@ -56,14 +59,18 @@ public class AppointmentServiceImpl implements AppointmentService {
         AppUser user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User", userId));
 
+        if(!employee.getProcedures().contains(procedure)){
+            throw new EmployeeUnavailableException(PROCEDURE_NOT_IN_THE_EMPLOYEES_LIST);
+        }
         LocalDateTime endDateTime = startDateTime.plusMinutes(procedure.getDurationMinutes());
         if(!availabilityService.isEmployeeAvailable(employeeId,
                 startDateTime,
                 endDateTime)){
 
-            throw new EmployeeUnavailableException("Employee is not available this time!");
+            throw new EmployeeUnavailableException(EMPLOYEE_UNAVAILABLE);
         }
         Appointment appointment = new Appointment(employee, procedure, user, startDateTime, endDateTime);
+        employee.addAppointment(appointment);
         appointmentRepository.save(appointment);
 
         return appointmentMapper.toDto(appointment);
@@ -78,14 +85,16 @@ public class AppointmentServiceImpl implements AppointmentService {
         //TODO check appointment's ownership by the user who wants to cancel it
 
         appointment.setStatus(AppointmentStatus.CANCELLED);
+        appointment.getEmployee().cancelAppointment(appointment);
 
         appointmentRepository.save(appointment);
     }
 
     @Override
     public List<Appointment> getAppointmentsForEmployee(Long employeeId, LocalDate date) {
-        Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new EntityNotFoundException("Employee", employeeId));
+        if(!employeeRepository.existsById(employeeId)) {
+            throw new EntityNotFoundException("Employee", employeeId);
+        }
         LocalDateTime startOfDay = date.atStartOfDay();
         LocalDateTime endOfDay = date.atTime(23,59,59);
         return appointmentRepository

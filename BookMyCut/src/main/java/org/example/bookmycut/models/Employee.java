@@ -3,9 +3,11 @@ package org.example.bookmycut.models;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.bookmycut.exceptions.DuplicateEntityException;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -38,16 +40,16 @@ public class Employee {
             joinColumns = @JoinColumn(name = "employee_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id")
     )
-    private List<Procedure> procedures;
+    private List<Procedure> procedures = new ArrayList<>();
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-    private List<EmployeeSchedule> schedules;
+    private List<EmployeeSchedule> schedules = new ArrayList<>();
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-    private List<EmployeeTimeOff> timeOffs;
+    private List<EmployeeTimeOff> timeOffs = new ArrayList<>();
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-    private List<Appointment> appointments;
+    private List<Appointment> appointments = new ArrayList<>();
 
     public Employee(String name,
                     String email,
@@ -55,5 +57,22 @@ public class Employee {
         this.name = name;
         this.email = email;
         this.phone = phone;
+    }
+
+    public void addProcedure(Procedure procedure) {
+        if (procedures.contains(procedure)) {
+            throw new DuplicateEntityException("Procedure");
+        }
+        procedures.add(procedure);
+    }
+
+    public void addAppointment(Appointment appointment) {
+        appointments.add(appointment);
+        appointment.setEmployee(this);
+    }
+
+    public void cancelAppointment(Appointment appointment) {
+        appointments.remove(appointment);
+        appointment.setEmployee(null);
     }
 }
