@@ -1,7 +1,8 @@
 package org.example.bookmycut.services;
 
-import org.example.bookmycut.dtos.AppUserDto;
-import org.example.bookmycut.dtos.AppointmentDto;
+import org.example.bookmycut.dtos.*;
+import org.example.bookmycut.dtos.auth.RegisterUserDto;
+import org.example.bookmycut.enums.Role;
 import org.example.bookmycut.exceptions.DuplicateEntityException;
 import org.example.bookmycut.exceptions.EntityNotFoundException;
 import org.example.bookmycut.helpers.mappers.AppUserMapper;
@@ -10,6 +11,7 @@ import org.example.bookmycut.models.AppUser;
 import org.example.bookmycut.repositories.AppUserRepository;
 import org.example.bookmycut.services.contracts.AppUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,25 +23,35 @@ public class AppUserServiceImpl implements AppUserService {
     private final AppUserRepository userRepository;
     private final AppUserMapper userMapper;
     private final AppointmentMapper appointmentMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AppUserServiceImpl(AppUserRepository userRepository, AppUserMapper userMapper, AppointmentMapper appointmentMapper) {
+    public AppUserServiceImpl(AppUserRepository userRepository,
+                              AppUserMapper userMapper,
+                              AppointmentMapper appointmentMapper,
+                              PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.appointmentMapper = appointmentMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     @Override
-    public AppUserDto registerUser(AppUserDto appUserDto) {
-        if(userRepository.existsByEmail(appUserDto.getEmail())){
-            throw new DuplicateEntityException("User", "email", appUserDto.getEmail());
+    public AppUserDto registerUser(RegisterUserDto registerDto) {
+        if(userRepository.existsByEmail(registerDto.getEmail())){
+            throw new DuplicateEntityException("User", "email", registerDto.getEmail());
         }
 
-        AppUser user = userMapper.toEntity(appUserDto);
+        AppUser user = new AppUser();
+        user.setUsername(registerDto.getUsername());
+        user.setEmail(registerDto.getEmail());
+        user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+
         AppUser saved = userRepository.save(user);
         return userMapper.toDto(saved);
     }
+
 
     @Transactional
     @Override
@@ -61,12 +73,30 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Transactional
     @Override
+    public void updatePassword(Long userId, String newPassword) {
+        AppUser user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User", userId));
+        user.setPassword(passwordEncoder.encode(newPassword));
+    }
+
+    @Transactional
+    @Override
     public AppUserDto removeUser(Long userId) {
         AppUser userToDelete = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User", userId));
 
         userRepository.delete(userToDelete);
         return userMapper.toDto(userToDelete);
+    }
+
+    @Override
+    public AppUserDto makeAdmin(Long userId) {
+        AppUser user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User", userId));
+
+        user.setRole(Role.ADMIN);
+        AppUser saved = userRepository.save(user);
+        return userMapper.toDto(saved);
     }
 
     @Transactional(readOnly = true)

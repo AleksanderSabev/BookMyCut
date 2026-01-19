@@ -2,6 +2,7 @@ package org.example.bookmycut.services.auth;
 
 import org.example.bookmycut.models.AppUser;
 import org.example.bookmycut.repositories.AppUserRepository;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found"));
 
-        return org.springframework.security.core.userdetails.User
+        return User
                 .withUsername(user.getUsername())
                 .password(user.getPassword())
                 .roles(user.getRole().name().toUpperCase())
