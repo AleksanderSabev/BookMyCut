@@ -23,10 +23,10 @@ public class EmployeeTimeOff {
     private Employee employee;
 
     @Column(name = "start_datetime")
-    private LocalDateTime startDatetime;
+    private LocalDateTime startDateTime;
 
     @Column(name = "end_datetime")
-    private LocalDateTime endDatetime;
+    private LocalDateTime endDateTime;
 
     @Column(name = "reason")
     private String reason;
@@ -40,8 +40,8 @@ public class EmployeeTimeOff {
                            LocalDateTime endDatetime,
                            String reason) {
         this.employee = employee;
-        this.startDatetime = startDatetime;
-        this.endDatetime = endDatetime;
+        this.startDateTime = startDatetime;
+        this.endDateTime = endDatetime;
         this.reason = reason;
     }
 }

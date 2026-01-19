@@ -15,7 +15,6 @@ import java.time.LocalTime;
 @Data
 public class ScheduleDto {
 
-    // Validation messages as constants
     public static final String MSG_EMPLOYEE_ID_REQUIRED = "Employee ID is required";
     public static final String MSG_DAY_REQUIRED = "Day of week is required";
     public static final String MSG_DAY_MIN = "Day of week must be at least 1 (Monday)";
