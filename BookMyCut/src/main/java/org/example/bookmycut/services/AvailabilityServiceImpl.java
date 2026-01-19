@@ -50,7 +50,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
                 end.toLocalTime().isAfter(daySchedule.getEndTime())) return false;
 
         if(timeOffRepository
-                .existsByEmployeeIdAndStartDatetimeLessThanAndEndDatetimeGreaterThan(employeeId, end, start)) return false;
+                .existsByEmployeeIdAndStartDateTimeLessThanAndEndDateTimeGreaterThan(employeeId, end, start)) return false;
 
         if(appointmentRepository
                 .existsByEmployeeIdAndStartDatetimeLessThanAndEndDatetimeGreaterThan(employeeId, end, start)) return false;
