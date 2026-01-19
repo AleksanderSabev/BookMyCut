@@ -2,7 +2,7 @@ package org.example.bookmycut.services;
 
 import org.example.bookmycut.dtos.ScheduleDto;
 import org.example.bookmycut.exceptions.EntityNotFoundException;
-import org.example.bookmycut.exceptions.OverlapScheduleException;
+import org.example.bookmycut.exceptions.TimeOverlapException;
 import org.example.bookmycut.helpers.mappers.EmployeeScheduleMapper;
 import org.example.bookmycut.models.Employee;
 import org.example.bookmycut.models.EmployeeSchedule;
@@ -54,7 +54,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 
         if(isOverlapping(scheduleDto)){
-            throw new OverlapScheduleException(OVERLAP_MESSAGE);
+            throw new TimeOverlapException(OVERLAP_MESSAGE);
         }
 
         EmployeeSchedule saved = scheduleRepository.save(scheduleMapper.toEntity(scheduleDto,employee));
@@ -100,7 +100,7 @@ public class ScheduleServiceImpl implements ScheduleService {
                         DayOfWeek.of(scheduleDTO.getDayOfWeek())));
 
         if (isOverlappingExcluding(scheduleDTO, schedule.getId())) {
-            throw new OverlapScheduleException(OVERLAP_MESSAGE);
+            throw new TimeOverlapException(OVERLAP_MESSAGE);
         }
 
         schedule.setStartTime(scheduleDTO.getStartTime());
@@ -156,4 +156,6 @@ public class ScheduleServiceImpl implements ScheduleService {
                 excludeId
         );
     }
+
+
 }

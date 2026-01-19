@@ -33,4 +33,5 @@ public interface AppointmentRepository extends
     List<Appointment> findByUserAndStatus(AppUser user, AppointmentStatus status);
 
     boolean existsByProcedureId(Long procedureId);
+
 }

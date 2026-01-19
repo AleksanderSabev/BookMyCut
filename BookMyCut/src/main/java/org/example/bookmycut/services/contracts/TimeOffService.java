@@ -8,9 +8,9 @@ public interface TimeOffService {
 
     TimeOffDto addTimeOff(TimeOffDto timeOffDto);
 
-    void removeTimeOff(Long timeOffId);
+    TimeOffDto removeTimeOff(Long timeOffId);
+
+    TimeOffDto updateTimeOff(TimeOffDto updatedDto);
 
     List<TimeOffDto> getTimeOffForEmployee(Long employeeId);
-
-    boolean isTimeOffOverlapping(TimeOffDto timeOffDto);
 }
