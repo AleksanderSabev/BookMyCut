@@ -1,29 +1,25 @@
 package org.example.bookmycut.services.contracts;
 
-import org.example.bookmycut.dtos.AppointmentDto;
-import org.example.bookmycut.models.Appointment;
+import org.example.bookmycut.dtos.appointment.AppointmentRequestDto;
+import org.example.bookmycut.dtos.appointment.AppointmentResponseDto;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AppointmentService {
 
-    AppointmentDto bookAppointment(
-            Long employeeId,
-            Long procedureId,
-            Long userId,
-            LocalDateTime startDateTime
+    AppointmentResponseDto bookAppointment(
+            Long userId, AppointmentRequestDto dto
     );
 
     void cancelAppointment(Long appointmentId);
 
-    List<Appointment> getAppointmentsForEmployee(
+    List<AppointmentResponseDto> getAppointmentsForEmployee(
             Long employeeId,
             LocalDate date
     );
 
-    List<Appointment> getAppointmentsForUser(Long userId);
+    List<AppointmentResponseDto> getAppointmentsForUser(Long userId);
 
     void markPastAppointmentsAsCompleted();
 }

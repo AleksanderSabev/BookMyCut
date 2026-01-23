@@ -1,6 +1,7 @@
 package org.example.bookmycut.services;
 
 import org.example.bookmycut.dtos.*;
+import org.example.bookmycut.dtos.appointment.AppointmentResponseDto;
 import org.example.bookmycut.dtos.auth.RegisterUserDto;
 import org.example.bookmycut.enums.Role;
 import org.example.bookmycut.exceptions.DuplicateEntityException;
@@ -118,7 +119,7 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<AppointmentDto> getUserAppointments(Long userId) {
+    public List<AppointmentResponseDto> getUserAppointments(Long userId) {
         AppUser user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User", userId));
 

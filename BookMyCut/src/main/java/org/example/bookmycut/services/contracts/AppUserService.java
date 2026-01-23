@@ -1,7 +1,7 @@
 package org.example.bookmycut.services.contracts;
 
 import org.example.bookmycut.dtos.AppUserDto;
-import org.example.bookmycut.dtos.AppointmentDto;
+import org.example.bookmycut.dtos.appointment.AppointmentResponseDto;
 import org.example.bookmycut.dtos.auth.RegisterUserDto;
 
 import java.util.List;
@@ -22,5 +22,5 @@ public interface AppUserService {
 
     List<AppUserDto> getAllUsers();
 
-    List<AppointmentDto> getUserAppointments(Long userId);
+    List<AppointmentResponseDto> getUserAppointments(Long userId);
 }

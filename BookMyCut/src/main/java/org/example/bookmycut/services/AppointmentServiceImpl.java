@@ -1,6 +1,7 @@
 package org.example.bookmycut.services;
 
-import org.example.bookmycut.dtos.AppointmentDto;
+import org.example.bookmycut.dtos.appointment.AppointmentRequestDto;
+import org.example.bookmycut.dtos.appointment.AppointmentResponseDto;
 import org.example.bookmycut.enums.AppointmentStatus;
 import org.example.bookmycut.exceptions.EmployeeUnavailableException;
 import org.example.bookmycut.exceptions.EntityNotFoundException;
@@ -49,12 +50,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Transactional
     @Override
-    public AppointmentDto bookAppointment(Long employeeId, Long procedureId, Long userId, LocalDateTime startDateTime) {
-        Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new EntityNotFoundException("Employee", employeeId));
+    public AppointmentResponseDto bookAppointment(Long userId, AppointmentRequestDto dto) {
+        Employee employee = employeeRepository.findById(dto.getEmployeeId())
+                .orElseThrow(() -> new EntityNotFoundException("Employee", dto.getEmployeeId()));
 
-        Procedure procedure = procedureRepository.findById(procedureId)
-                .orElseThrow(() -> new EntityNotFoundException("Procedure",procedureId));
+        Procedure procedure = procedureRepository.findById(dto.getProcedureId())
+                .orElseThrow(() -> new EntityNotFoundException("Procedure", dto.getProcedureId()));
 
         AppUser user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User", userId));
@@ -62,14 +63,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         if(!employee.getProcedures().contains(procedure)){
             throw new EmployeeUnavailableException(PROCEDURE_NOT_IN_THE_EMPLOYEES_LIST);
         }
-        LocalDateTime endDateTime = startDateTime.plusMinutes(procedure.getDurationMinutes());
-        if(!availabilityService.isEmployeeAvailable(employeeId,
-                startDateTime,
+        LocalDateTime endDateTime = dto.getStartDateTime().plusMinutes(procedure.getDurationMinutes());
+        if(!availabilityService.isEmployeeAvailable(dto.getEmployeeId(),
+                dto.getStartDateTime(),
                 endDateTime)){
 
             throw new EmployeeUnavailableException(EMPLOYEE_UNAVAILABLE);
         }
-        Appointment appointment = new Appointment(employee, procedure, user, startDateTime, endDateTime);
+        Appointment appointment = new Appointment(employee, procedure, user, dto.getStartDateTime(), endDateTime);
         employee.addAppointment(appointment);
         appointmentRepository.save(appointment);
 
@@ -91,7 +92,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<Appointment> getAppointmentsForEmployee(Long employeeId, LocalDate date) {
+    public List<AppointmentResponseDto> getAppointmentsForEmployee(Long employeeId, LocalDate date) {
         if(!employeeRepository.existsById(employeeId)) {
             throw new EntityNotFoundException("Employee", employeeId);
         }
@@ -100,14 +101,17 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentRepository
                 .findByEmployeeIdAndStartDatetimeBetween(employeeId,startOfDay,endOfDay)
                 .stream().filter(a -> !a.getStatus().equals(AppointmentStatus.CANCELLED))
+                .map(appointmentMapper::toDto)
                 .toList();
     }
 
     @Override
-    public List<Appointment> getAppointmentsForUser(Long userId) {
+    public List<AppointmentResponseDto> getAppointmentsForUser(Long userId) {
         AppUser user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User", userId));
-        return appointmentRepository.findByUserAndStatus(user, AppointmentStatus.SCHEDULED);
+        return appointmentRepository.findByUserAndStatus(user, AppointmentStatus.SCHEDULED).stream()
+                .map(appointmentMapper::toDto)
+                .toList();
     }
 
     @Transactional
