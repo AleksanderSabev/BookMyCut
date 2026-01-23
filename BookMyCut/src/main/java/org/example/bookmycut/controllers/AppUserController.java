@@ -17,14 +17,14 @@ public class AppUserController {//TODO match method names with the services
     }
 
     @GetMapping("/{id}")
-    public AppUserDto getUser(@PathVariable Long id) {
+    public AppUserDto getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
     }
 
     @PutMapping("/{id}")
-    public AppUserDto updateUser(@PathVariable Long id, @RequestBody AppUserDto dto) {
+    public void updateUser(@PathVariable Long id, @RequestBody AppUserDto dto) {
         dto.setId(id);
-        return userService.updateUser(dto);
+        userService.updateUser(dto);
     }
 
     @PutMapping("/{id}/password")
@@ -32,8 +32,8 @@ public class AppUserController {//TODO match method names with the services
     }
 
     @DeleteMapping("/{id}")
-    public AppUserDto deleteUser(@PathVariable Long id) {
-        return userService.removeUser(id);
+    public void deleteUser(@PathVariable Long id) {
+        userService.removeUser(id);
     }
 
     @PostMapping("/{id}/promote")

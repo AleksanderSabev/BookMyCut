@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -31,7 +32,6 @@ public class AppointmentController {
         return appointmentService.bookAppointment(userId, dto);
     }
 
-    // User cancels appointment
     @DeleteMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<@NonNull String> cancelAppointment(@PathVariable Long id) {
@@ -40,22 +40,20 @@ public class AppointmentController {
         return ResponseEntity.ok(SUCCESSFUL_APPOINTMENT_CANCELLATION);
     }
 
-    // User updates appointment
-    @PutMapping("/{id}")
-    public AppointmentResponseDto updateAppointment(@PathVariable Long id, @RequestBody AppointmentResponseDto dto) {
-        return null;//TODO Add update method
+    @GetMapping("/my-appointments")
+    @PreAuthorize("isAuthenticated()")
+    public List<AppointmentResponseDto> getAppointmentsForUser() {
+        Long userId = SecurityUtils.getCurrentUserId();
+
+        return appointmentService.getAppointmentsForUser(userId);
     }
 
-    // Get appointments for a user
-    @GetMapping("/user/{userId}")
-    public List<AppointmentResponseDto> getAppointmentsForUser(@PathVariable Long userId) {
-        return null;
-    }
-
-    // Get appointments for an employee
     @GetMapping("/employee/{employeeId}")
-    public List<AppointmentResponseDto> getAppointmentsForEmployee(@PathVariable Long employeeId) {
-        return null;
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<AppointmentResponseDto> getAppointmentsForEmployee(@PathVariable Long employeeId,
+                                                                   @RequestParam(required = false) LocalDate date) {
+        LocalDate queryDate = (date != null) ? date : LocalDate.now();
+        return appointmentService.getAppointmentsForEmployee(employeeId, queryDate);
     }
 }
 
