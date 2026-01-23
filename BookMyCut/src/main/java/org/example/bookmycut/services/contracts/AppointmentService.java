@@ -12,7 +12,7 @@ public interface AppointmentService {
             Long userId, AppointmentRequestDto dto
     );
 
-    void cancelAppointment(Long appointmentId);
+    void cancelAppointment(Long appointmentId, Long userId);
 
     List<AppointmentResponseDto> getAppointmentsForEmployee(
             Long employeeId,

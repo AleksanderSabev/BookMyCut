@@ -8,9 +8,9 @@ public interface TimeOffService {
 
     TimeOffDto addTimeOff(TimeOffDto timeOffDto);
 
-    TimeOffDto removeTimeOff(Long timeOffId);
+    void removeTimeOff(Long timeOffId);
 
-    TimeOffDto updateTimeOff(TimeOffDto updatedDto);
+    void updateTimeOff(TimeOffDto updatedDto);
 
     List<TimeOffDto> getTimeOffForEmployee(Long employeeId);
 }

@@ -56,7 +56,7 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Transactional
     @Override
-    public AppUserDto updateUser(AppUserDto appUserDto) {
+    public void updateUser(AppUserDto appUserDto) {
         AppUser userToUpdate = userRepository.findById(appUserDto.getId())
                 .orElseThrow(() -> new EntityNotFoundException("User", appUserDto.getId()));
 
@@ -69,7 +69,6 @@ public class AppUserServiceImpl implements AppUserService {
         userToUpdate.setEmail(appUserDto.getEmail());
 
         AppUser saved = userRepository.save(userToUpdate);
-        return userMapper.toDto(saved);
     }
 
     @Transactional
@@ -82,22 +81,20 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Transactional
     @Override
-    public AppUserDto removeUser(Long userId) {
+    public void removeUser(Long userId) {
         AppUser userToDelete = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User", userId));
 
         userRepository.delete(userToDelete);
-        return userMapper.toDto(userToDelete);
     }
 
     @Override
-    public AppUserDto makeAdmin(Long userId) {
+    public void makeAdmin(Long userId) {
         AppUser user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User", userId));
 
         user.setRole(Role.ADMIN);
         AppUser saved = userRepository.save(user);
-        return userMapper.toDto(saved);
     }
 
     @Transactional(readOnly = true)

@@ -78,18 +78,17 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Transactional
     @Override
-    public ScheduleDto removeSchedule(ScheduleDto scheduleDTO) {
+    public void removeSchedule(ScheduleDto scheduleDTO) {
          EmployeeSchedule schedule = scheduleRepository
                  .findByEmployeeIdAndDayOfWeek(scheduleDTO.getEmployee().getId(), scheduleDTO.getDayOfWeek())
                  .orElseThrow(() -> new EntityNotFoundException(scheduleDTO.getEmployee().getName(),
                          DayOfWeek.of(scheduleDTO.getDayOfWeek())));
 
          scheduleRepository.delete(schedule);
-         return scheduleMapper.toDTO(schedule);
     }
 
     @Override
-    public ScheduleDto updateSchedule(ScheduleDto scheduleDTO) {
+    public void updateSchedule(ScheduleDto scheduleDTO) {
         if(!employeeRepository.existsById(scheduleDTO.getEmployee().getId())){
             throw new EntityNotFoundException("Employee", scheduleDTO.getEmployee().getId());
         }
@@ -107,8 +106,6 @@ public class ScheduleServiceImpl implements ScheduleService {
         schedule.setEndTime(scheduleDTO.getEndTime());
 
         EmployeeSchedule saved = scheduleRepository.save(schedule);
-
-        return scheduleMapper.toDTO(saved);
     }
 
 

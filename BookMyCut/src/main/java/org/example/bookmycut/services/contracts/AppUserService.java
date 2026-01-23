@@ -10,13 +10,13 @@ public interface AppUserService {
 
     AppUserDto registerUser(RegisterUserDto registerDto);
 
-    AppUserDto updateUser(AppUserDto appUserDto);
+    void updateUser(AppUserDto appUserDto);
 
     void updatePassword(Long userId, String newPassword);
 
-    AppUserDto removeUser(Long userId);
+    void removeUser(Long userId);
 
-    AppUserDto makeAdmin(Long userId);
+    void makeAdmin(Long userId);
 
     AppUserDto getUserById(Long userId);
 

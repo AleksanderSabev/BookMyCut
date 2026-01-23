@@ -1,10 +1,12 @@
 package org.example.bookmycut.controllers;
 
 import jakarta.validation.Valid;
+import lombok.NonNull;
 import org.example.bookmycut.dtos.appointment.AppointmentRequestDto;
 import org.example.bookmycut.dtos.appointment.AppointmentResponseDto;
 import org.example.bookmycut.helpers.security.SecurityUtils;
 import org.example.bookmycut.services.contracts.AppointmentService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +15,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/appointments")
 public class AppointmentController {
+
+    private final String SUCCESSFUL_APPOINTMENT_CANCELLATION = "Appointment cancelled successfully.";
 
     private final AppointmentService appointmentService;
 
@@ -29,8 +33,11 @@ public class AppointmentController {
 
     // User cancels appointment
     @DeleteMapping("/{id}")
-    public AppointmentResponseDto cancelAppointment(@PathVariable Long id) {
-        return null;//TODO fix consistency for return types on delete methods
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<@NonNull String> cancelAppointment(@PathVariable Long id) {
+        Long userId = SecurityUtils.getCurrentUserId();
+        appointmentService.cancelAppointment(id, userId);
+        return ResponseEntity.ok(SUCCESSFUL_APPOINTMENT_CANCELLATION);
     }
 
     // User updates appointment

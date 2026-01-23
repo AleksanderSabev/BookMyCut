@@ -10,10 +10,10 @@ public interface ScheduleService {
 
     List<ScheduleDto> getScheduleForEmployee(Long employeeId);
 
-    ScheduleDto removeSchedule(ScheduleDto scheduleDTO);
+    void removeSchedule(ScheduleDto scheduleDTO);
 
 
-    ScheduleDto updateSchedule(ScheduleDto scheduleDTO);
+    void updateSchedule(ScheduleDto scheduleDTO);
 
 
     List<ScheduleDto> getScheduleForEmployeeByDay(Long employeeId, int dayOfWeek);

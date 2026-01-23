@@ -62,19 +62,17 @@ public class TimeOffServiceImpl implements TimeOffService {
 
     @Transactional
     @Override
-    public TimeOffDto removeTimeOff(Long timeOffId) {
+    public void removeTimeOff(Long timeOffId) {
         EmployeeTimeOff deleted = timeOffRepository.findById(timeOffId)
                 .orElseThrow(() -> new EntityNotFoundException("Time off", timeOffId));
 
         timeOffRepository.delete(deleted);
 
-        return timeOffMapper.toDto(deleted);
-
     }
 
     @Transactional
     @Override
-    public TimeOffDto updateTimeOff(TimeOffDto timeOffDto) {
+    public void updateTimeOff(TimeOffDto timeOffDto) {
         checkStartBeforeEnd(timeOffDto.getStartDateTime(), timeOffDto.getEndDateTime());
 
         EmployeeTimeOff existing = timeOffRepository.findById(timeOffDto.getId())
@@ -96,8 +94,6 @@ public class TimeOffServiceImpl implements TimeOffService {
         existing.setReason(timeOffDto.getReason());
 
         EmployeeTimeOff updated = timeOffRepository.save(existing);
-
-        return timeOffMapper.toDto(updated);
     }
 
 

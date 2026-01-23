@@ -56,7 +56,7 @@ public class ProcedureCatalogServiceImpl implements ProcedureCatalogService {
 
     @Transactional
     @Override
-    public ProcedureDto updateProcedure(Long id, ProcedureDto procedureDto) {
+    public void updateProcedure(Long id, ProcedureDto procedureDto) {
         Procedure procedure = procedureRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Procedure", id));
 
@@ -65,7 +65,6 @@ public class ProcedureCatalogServiceImpl implements ProcedureCatalogService {
         procedure.setPrice(procedureDto.getPrice());
 
         Procedure saved = procedureRepository.save(procedure);
-        return mapper.toDto(saved);
     }
 
     @Transactional

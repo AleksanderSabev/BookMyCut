@@ -12,7 +12,7 @@ public interface ProcedureCatalogService {
 
     ProcedureDto getProcedureById(Long id);
 
-    ProcedureDto updateProcedure(Long id, ProcedureDto procedureDto);
+    void updateProcedure(Long id, ProcedureDto procedureDto);
 
     void deleteProcedure(Long id);
 }

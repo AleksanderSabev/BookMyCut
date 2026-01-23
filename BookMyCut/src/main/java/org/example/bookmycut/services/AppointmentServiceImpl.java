@@ -5,6 +5,7 @@ import org.example.bookmycut.dtos.appointment.AppointmentResponseDto;
 import org.example.bookmycut.enums.AppointmentStatus;
 import org.example.bookmycut.exceptions.EmployeeUnavailableException;
 import org.example.bookmycut.exceptions.EntityNotFoundException;
+import org.example.bookmycut.exceptions.UnauthorizedOperationException;
 import org.example.bookmycut.helpers.mappers.AppointmentMapper;
 import org.example.bookmycut.models.AppUser;
 import org.example.bookmycut.models.Appointment;
@@ -79,11 +80,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Transactional
     @Override
-    public void cancelAppointment(Long appointmentId) {
+    public void cancelAppointment(Long appointmentId, Long userId) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new EntityNotFoundException("Appointment", appointmentId));
 
-        //TODO check appointment's ownership by the user who wants to cancel it
+        if(!appointment.getUser().getId().equals(userId)){
+            throw new UnauthorizedOperationException();
+        }
 
         appointment.setStatus(AppointmentStatus.CANCELLED);
         appointment.getEmployee().cancelAppointment(appointment);
