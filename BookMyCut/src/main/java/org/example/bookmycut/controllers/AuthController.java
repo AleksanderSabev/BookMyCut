@@ -1,10 +1,12 @@
 package org.example.bookmycut.controllers;
 
-import org.example.bookmycut.dtos.AppUserDto;
+import jakarta.validation.Valid;
+import lombok.NonNull;
+import org.example.bookmycut.dtos.auth.AuthResponseDto;
 import org.example.bookmycut.dtos.auth.LoginUserDto;
 import org.example.bookmycut.dtos.auth.RegisterUserDto;
-import org.example.bookmycut.services.auth.JwtService;
-import org.example.bookmycut.services.contracts.AppUserService;
+import org.example.bookmycut.services.contracts.AuthService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,22 +16,28 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final AppUserService userService;
-    private final JwtService jwtService;
+    private final String LOGOUT_SUCCESSFUL= "Logged out successfully!";
 
-    public AuthController(AppUserService userService, JwtService jwtService) {
-        this.userService = userService;
-        this.jwtService = jwtService;
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
     }
 
     @PostMapping("/register")
-    public AppUserDto register(@RequestBody RegisterUserDto dto) {
-        return userService.registerUser(dto);
+    public ResponseEntity<@NonNull AuthResponseDto> register(@Valid @RequestBody RegisterUserDto dto) {
+        return ResponseEntity.ok(authService.register(dto));
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginUserDto dto) {
-        return null; // returns JWT token
+    public ResponseEntity<@NonNull AuthResponseDto> login(@Valid @RequestBody LoginUserDto dto) {
+        return ResponseEntity.ok(authService.login(dto));
+    }
+
+    // Stateless logout – client must delete JWT
+    @PostMapping("/logout")
+    public ResponseEntity<@NonNull String> logout(){
+        return ResponseEntity.ok(LOGOUT_SUCCESSFUL);
     }
 }
 

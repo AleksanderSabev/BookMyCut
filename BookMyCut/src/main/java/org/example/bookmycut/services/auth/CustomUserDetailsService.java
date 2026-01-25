@@ -1,5 +1,6 @@
 package org.example.bookmycut.services.auth;
 
+import lombok.NonNull;
 import org.example.bookmycut.models.AppUser;
 import org.example.bookmycut.repositories.AppUserRepository;
 import org.example.bookmycut.security.CustomUserDetails;
@@ -18,7 +19,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username)
+    public @NonNull UserDetails loadUserByUsername(@NonNull String username)
             throws UsernameNotFoundException {
 
         AppUser user = userRepository.findByUsername(username)

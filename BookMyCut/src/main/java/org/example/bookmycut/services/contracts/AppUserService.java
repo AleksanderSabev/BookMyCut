@@ -2,21 +2,21 @@ package org.example.bookmycut.services.contracts;
 
 import org.example.bookmycut.dtos.AppUserDto;
 import org.example.bookmycut.dtos.appointment.AppointmentResponseDto;
-import org.example.bookmycut.dtos.auth.RegisterUserDto;
+import org.example.bookmycut.dtos.auth.UpdatePasswordDto;
 
 import java.util.List;
 
 public interface AppUserService {
 
-    AppUserDto registerUser(RegisterUserDto registerDto);
-
     void updateUser(AppUserDto appUserDto);
 
-    void updatePassword(Long userId, String newPassword);
+    void updatePassword(Long userId, UpdatePasswordDto passwordDto);
 
     void removeUser(Long userId);
 
     void makeAdmin(Long userId);
+
+    void makeClient(Long userId);
 
     AppUserDto getUserById(Long userId);
 
