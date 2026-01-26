@@ -25,7 +25,7 @@ public class ScheduleDto {
     private Long id;
 
     @NotNull(message = MSG_EMPLOYEE_ID_REQUIRED)
-    private EmployeeDto employee;
+    private Long employeeId;
 
     @NotNull(message = MSG_DAY_REQUIRED)
     @Min(value = 1, message = MSG_DAY_MIN)

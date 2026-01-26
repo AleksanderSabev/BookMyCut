@@ -14,7 +14,6 @@ public class AppUserMapper {
         user.setId(dto.getId());
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());
-        user.setPassword(dto.getPassword());
 
         return user;
     }

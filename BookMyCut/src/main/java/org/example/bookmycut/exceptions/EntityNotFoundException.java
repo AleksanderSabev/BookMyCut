@@ -20,7 +20,7 @@ public class EntityNotFoundException extends RuntimeException {
         this(type, "id", missingIds);
     }
 
-    public EntityNotFoundException(String employeeName, DayOfWeek dayOfWeek) {
-        this("Schedule of employee %s for %s not found", employeeName, String.valueOf(dayOfWeek));
+    public EntityNotFoundException(Long id, DayOfWeek dayOfWeek) {
+        super(String.format("Schedule of employee with id %d for %s not found", id, dayOfWeek));
     }
 }

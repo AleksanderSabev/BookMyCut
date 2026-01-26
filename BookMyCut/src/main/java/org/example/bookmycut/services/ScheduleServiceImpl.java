@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.util.List;
 
@@ -23,8 +22,6 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final String OVERLAP_MESSAGE = "The new schedule overlaps with an existing schedule for this employee.";
 
     private final String START_BEFORE_END_MESSAGE = "Start time must be before end time";
-
-    private final String DAY_OF_WEEK_RESTRICTIONS = "Day of week must be between 1 (MONDAY) and 7 (SUNDAY)";
 
     private final EmployeeScheduleRepository scheduleRepository;
 
@@ -49,8 +46,8 @@ public class ScheduleServiceImpl implements ScheduleService {
             throw new IllegalArgumentException(START_BEFORE_END_MESSAGE);
         }
 
-        Employee employee = employeeRepository.findById(scheduleDto.getEmployee().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Employee", scheduleDto.getEmployee().getId()));
+        Employee employee = employeeRepository.findById(scheduleDto.getEmployeeId())
+                .orElseThrow(() -> new EntityNotFoundException("Employee", scheduleDto.getEmployeeId()));
 
 
         if(isOverlapping(scheduleDto)){
@@ -78,24 +75,24 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Transactional
     @Override
-    public void removeSchedule(ScheduleDto scheduleDTO) {
+    public void removeSchedule(Long employeeId, DayOfWeek day) {
          EmployeeSchedule schedule = scheduleRepository
-                 .findByEmployeeIdAndDayOfWeek(scheduleDTO.getEmployee().getId(), scheduleDTO.getDayOfWeek())
-                 .orElseThrow(() -> new EntityNotFoundException(scheduleDTO.getEmployee().getName(),
-                         DayOfWeek.of(scheduleDTO.getDayOfWeek())));
+                 .findByEmployeeIdAndDayOfWeek(employeeId, day.getValue())
+                 .orElseThrow(() -> new EntityNotFoundException(employeeId,
+                         day));
 
          scheduleRepository.delete(schedule);
     }
 
     @Override
     public void updateSchedule(ScheduleDto scheduleDTO) {
-        if(!employeeRepository.existsById(scheduleDTO.getEmployee().getId())){
-            throw new EntityNotFoundException("Employee", scheduleDTO.getEmployee().getId());
+        if(!employeeRepository.existsById(scheduleDTO.getEmployeeId())){
+            throw new EntityNotFoundException("Employee", scheduleDTO.getEmployeeId());
         }
 
         EmployeeSchedule schedule = scheduleRepository
-                .findByEmployeeIdAndDayOfWeek(scheduleDTO.getEmployee().getId(), scheduleDTO.getDayOfWeek())
-                .orElseThrow(() -> new EntityNotFoundException(scheduleDTO.getEmployee().getName(),
+                .findByEmployeeIdAndDayOfWeek(scheduleDTO.getEmployeeId(), scheduleDTO.getDayOfWeek())
+                .orElseThrow(() -> new EntityNotFoundException(scheduleDTO.getEmployeeId(),
                         DayOfWeek.of(scheduleDTO.getDayOfWeek())));
 
         if (isOverlappingExcluding(scheduleDTO, schedule.getId())) {
@@ -111,20 +108,14 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<ScheduleDto> getScheduleForEmployeeByDay(Long employeeId, int dayOfWeek) {
+    public ScheduleDto getScheduleForEmployeeByDay(Long employeeId, DayOfWeek dayOfWeek) {
         if(!employeeRepository.existsById(employeeId)){
             throw new EntityNotFoundException("Employee", employeeId);
         }
-        try {
-            DayOfWeek.of(dayOfWeek);
-        } catch (DateTimeException e) {
-            throw new IllegalArgumentException(DAY_OF_WEEK_RESTRICTIONS);
-        }
 
-        return scheduleRepository.findByEmployeeIdAndDayOfWeek(employeeId,dayOfWeek)
-                .stream()
-                .map(scheduleMapper::toDTO)
-                .toList();
+        EmployeeSchedule schedule = scheduleRepository.findByEmployeeIdAndDayOfWeek(employeeId,dayOfWeek.getValue())
+                .orElseThrow(() -> new EntityNotFoundException(employeeId,dayOfWeek));
+        return scheduleMapper.toDTO(schedule);
     }
 
     @Override
@@ -137,7 +128,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     protected boolean isOverlapping(ScheduleDto scheduleDto){
         return scheduleRepository.existsByEmployeeIdAndDayOfWeekAndTimeOverlap(
-                scheduleDto.getEmployee().getId(),
+                scheduleDto.getEmployeeId(),
                 scheduleDto.getDayOfWeek(),
                 scheduleDto.getStartTime(),
                 scheduleDto.getEndTime()
@@ -146,7 +137,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     protected boolean isOverlappingExcluding(ScheduleDto scheduleDto, Long excludeId){
         return scheduleRepository.existsByEmployeeIdAndDayOfWeekAndTimeOverlapExcludingId(
-                scheduleDto.getEmployee().getId(),
+                scheduleDto.getEmployeeId(),
                 scheduleDto.getDayOfWeek(),
                 scheduleDto.getStartTime(),
                 scheduleDto.getEndTime(),
