@@ -1,6 +1,7 @@
 package org.example.bookmycut.services;
 
 import org.example.bookmycut.enums.AppointmentStatus;
+import org.example.bookmycut.exceptions.DuplicateEntityException;
 import org.example.bookmycut.exceptions.EntityHasAppointmentsException;
 import org.example.bookmycut.exceptions.EntityNotFoundException;
 import org.example.bookmycut.dtos.EmployeeDto;
@@ -83,6 +84,23 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Transactional
     @Override
+    public void updateEmployee(Long id, EmployeeDto dto) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Employee", id));
+
+        if(employee.getEmail().equals(dto.getEmail())){
+            throw new DuplicateEntityException("Employee", "email", dto.getEmail());
+        }
+
+        employee.setName(dto.getName());
+        employee.setEmail(dto.getEmail());
+        employee.setPhone(dto.getPhone());
+
+        employeeRepository.save(employee);
+    }
+
+    @Transactional
+    @Override
     public void assignProcedureToEmployee(Long employeeId, Long procedureId) {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("Employee", employeeId));
@@ -107,7 +125,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Transactional
     @Override
-    public void deleteEmployee(Long id) {
+    public void removeEmployee(Long id) {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Employee", id));
 

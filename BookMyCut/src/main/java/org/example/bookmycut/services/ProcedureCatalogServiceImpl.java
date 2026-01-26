@@ -69,7 +69,7 @@ public class ProcedureCatalogServiceImpl implements ProcedureCatalogService {
 
     @Transactional
     @Override
-    public void deleteProcedure(Long id) {
+    public void removeProcedure(Long id) {
         if(!procedureRepository.existsById(id))
             throw new EntityNotFoundException("Procedure", id);
 

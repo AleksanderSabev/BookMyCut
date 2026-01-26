@@ -14,5 +14,5 @@ public interface ProcedureCatalogService {
 
     void updateProcedure(Long id, ProcedureDto procedureDto);
 
-    void deleteProcedure(Long id);
+    void removeProcedure(Long id);
 }

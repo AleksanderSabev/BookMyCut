@@ -1,7 +1,11 @@
 package org.example.bookmycut.controllers;
 
+import jakarta.validation.Valid;
+import lombok.NonNull;
 import org.example.bookmycut.dtos.ProcedureDto;
 import org.example.bookmycut.services.contracts.ProcedureCatalogService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,37 +15,43 @@ import java.util.List;
 @RequestMapping("/procedures")
 public class ProcedureCatalogController {
 
-    private final ProcedureCatalogService service;
+    private final String UPDATE_SUCCESSFUL = "Procedure updated successfully.";
+    private final String DELETE_SUCCESSFUL = "Procedure deleted successfully.";
 
-    public ProcedureCatalogController(ProcedureCatalogService service) {
-        this.service = service;
+    private final ProcedureCatalogService procedureService;
+
+    public ProcedureCatalogController(ProcedureCatalogService procedureService) {
+        this.procedureService = procedureService;
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ProcedureDto addService(@RequestBody ProcedureDto dto) {
-        return service.createProcedure(dto);
+    public ResponseEntity<@NonNull ProcedureDto> createProcedure(@Valid @RequestBody ProcedureDto dto) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(procedureService.createProcedure(dto));
     }
 
     @GetMapping("/{id}")
-    public ProcedureDto getService(@PathVariable Long id) {
-        return service.getProcedureById(id);
+    public ResponseEntity<@NonNull ProcedureDto> getProcedure(@PathVariable Long id) {
+        return ResponseEntity.ok(procedureService.getProcedureById(id));
     }
 
     @GetMapping
-    public List<ProcedureDto> getAllServices() {
-        return service.getAllProcedures();
+    public List<ProcedureDto> getAllProcedures() {
+        return procedureService.getAllProcedures();
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ProcedureDto updateService(@PathVariable Long id, @RequestBody ProcedureDto dto) {
-        return service.updateProcedure(id, dto);
+    public ResponseEntity<@NonNull String> updateProcedure(@PathVariable Long id, @Valid @RequestBody ProcedureDto dto) {
+        procedureService.updateProcedure(id, dto);
+        return ResponseEntity.ok(UPDATE_SUCCESSFUL);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ProcedureDto removeService(@PathVariable Long id) {
-        return null;
+    public ResponseEntity<@NonNull String> removeProcedure(@PathVariable Long id) {
+        procedureService.removeProcedure(id);
+        return ResponseEntity.ok(DELETE_SUCCESSFUL);
     }
 }

@@ -13,9 +13,11 @@ public interface EmployeeService {
 
     EmployeeDto getEmployeeById(Long id);
 
+    void updateEmployee(Long id, EmployeeDto dto);
+
     void assignProcedureToEmployee(Long employeeId, Long procedureId);
 
     List<ProcedureDto> getProceduresForEmployee(Long employeeId);
 
-    void deleteEmployee(Long id);
+    void removeEmployee(Long id);
 }
