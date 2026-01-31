@@ -49,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         assert userDetails != null;
 
-        String token = jwtService.generateToken(userDetails.getUsername());
+        String token = jwtService.generateToken(userDetails);
         return new AuthResponseDto(
                 userDetails.getUsername(),
                 token,
@@ -77,7 +77,9 @@ public class AuthServiceImpl implements AuthService {
 
         AppUser saved = userRepository.save(user);
 
-        String token = jwtService.generateToken(saved.getUsername());
+        CustomUserDetails userDetails = new CustomUserDetails(saved);
+
+        String token = jwtService.generateToken(userDetails);
 
         return new AuthResponseDto(
                 saved.getUsername(),

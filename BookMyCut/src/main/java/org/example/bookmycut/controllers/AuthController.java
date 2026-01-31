@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final String LOGOUT_SUCCESSFUL= "Logged out successfully!";
+    private static final String LOGOUT_SUCCESSFUL= "Logged out successfully!";
 
     private final AuthService authService;
 

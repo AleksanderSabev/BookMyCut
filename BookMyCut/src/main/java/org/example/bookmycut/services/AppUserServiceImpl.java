@@ -1,14 +1,12 @@
 package org.example.bookmycut.services;
 
 import org.example.bookmycut.dtos.*;
-import org.example.bookmycut.dtos.appointment.AppointmentResponseDto;
 import org.example.bookmycut.dtos.auth.UpdatePasswordDto;
 import org.example.bookmycut.enums.Role;
 import org.example.bookmycut.exceptions.AlreadyHasThisRoleException;
 import org.example.bookmycut.exceptions.DuplicateEntityException;
 import org.example.bookmycut.exceptions.EntityNotFoundException;
 import org.example.bookmycut.helpers.mappers.AppUserMapper;
-import org.example.bookmycut.helpers.mappers.AppointmentMapper;
 import org.example.bookmycut.models.AppUser;
 import org.example.bookmycut.repositories.AppUserRepository;
 import org.example.bookmycut.services.contracts.AppUserService;
@@ -22,22 +20,19 @@ import java.util.List;
 @Service
 public class AppUserServiceImpl implements AppUserService {
 
-    private final String PASSWORDS_DO_NOT_MATCH = "Passwords do not match!";
-    private final String PASSWORD_IS_THE_SAME = "Password is the same as the old one.";
+    private static final String PASSWORDS_DO_NOT_MATCH = "Passwords do not match!";
+    private static final String PASSWORD_IS_THE_SAME = "Password is the same as the old one.";
 
     private final AppUserRepository userRepository;
     private final AppUserMapper userMapper;
-    private final AppointmentMapper appointmentMapper;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public AppUserServiceImpl(AppUserRepository userRepository,
                               AppUserMapper userMapper,
-                              AppointmentMapper appointmentMapper,
                               PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
-        this.appointmentMapper = appointmentMapper;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -47,6 +42,11 @@ public class AppUserServiceImpl implements AppUserService {
     public void updateUser(AppUserDto appUserDto) {
         AppUser userToUpdate = userRepository.findById(appUserDto.getId())
                 .orElseThrow(() -> new EntityNotFoundException("User", appUserDto.getId()));
+
+        if(!userToUpdate.getUsername().equals(appUserDto.getUsername()) &&
+                userRepository.existsByUsername(appUserDto.getUsername())){
+            throw new DuplicateEntityException("User", "username", appUserDto.getUsername());
+        }
 
         if(!userToUpdate.getEmail().equals(appUserDto.getEmail()) &&
                 userRepository.existsByEmail(appUserDto.getEmail())){
@@ -126,15 +126,4 @@ public class AppUserServiceImpl implements AppUserService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<AppointmentResponseDto> getUserAppointments(Long userId) {
-        AppUser user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User", userId));
-
-        return user.getAppointments()
-                .stream()
-                .map(appointmentMapper::toDto)
-                .toList();
-    }
 }

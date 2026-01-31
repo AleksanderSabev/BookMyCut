@@ -9,7 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class UpdatePasswordDto {
 
-    private final String PASS_LENGTH_SIZE = "New password length must be between 6 and 20 characters";
+    private static final String PASS_LENGTH_SIZE = "New password length must be between 6 and 20 characters";
 
     @NotBlank
     @Size(min = 6, max = 20, message = PASS_LENGTH_SIZE)

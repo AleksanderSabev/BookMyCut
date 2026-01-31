@@ -13,10 +13,12 @@ import org.example.bookmycut.models.Procedure;
 import org.example.bookmycut.repositories.EmployeeRepository;
 import org.example.bookmycut.repositories.ProcedureRepository;
 import org.example.bookmycut.services.contracts.EmployeeService;
+import org.example.bookmycut.services.contracts.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,14 +33,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final ProcedureMapper procedureMapper;
 
+    private final ScheduleService scheduleService;
+
     @Autowired
     public EmployeeServiceImpl(EmployeeRepository employeeRepository,
                                ProcedureRepository procedureRepository,
-                               EmployeeMapper employeeMapper, ProcedureMapper procedureMapper) {
+                               EmployeeMapper employeeMapper, ProcedureMapper procedureMapper, ScheduleService scheduleService) {
         this.employeeRepository = employeeRepository;
         this.procedureRepository = procedureRepository;
         this.employeeMapper = employeeMapper;
         this.procedureMapper = procedureMapper;
+        this.scheduleService = scheduleService;
     }
 
     @Transactional
@@ -88,7 +93,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Employee", id));
 
-        if(employee.getEmail().equals(dto.getEmail())){
+        if (!employee.getEmail().equals(dto.getEmail()) && employeeRepository.existsByEmail(dto.getEmail())) {
             throw new DuplicateEntityException("Employee", "email", dto.getEmail());
         }
 
@@ -110,6 +115,35 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         employeeRepository.save(employee);
 
+    }
+
+    @Override
+    public List<EmployeeDto> getEmployeesByProcedure(Long procedureId) {
+        if (!procedureRepository.existsById(procedureId)) {
+            throw new EntityNotFoundException("Procedure", procedureId);
+        }
+
+        List<Employee> employees = employeeRepository.findAllByProcedureId(procedureId);
+
+        return employees.stream()
+                .map(employeeMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    public List<EmployeeDto> getWorkingEmployees(LocalDate date) {
+        return employeeRepository.findAll().stream()
+                .filter(e -> scheduleService.isEmployeeWorkingOnDay(e.getId(), date.getDayOfWeek()))
+                .map(employeeMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    public List<EmployeeDto> getEmployeesByName(String name) {
+        return employeeRepository.findByNameContainingIgnoreCase(name)
+                .stream()
+                .map(employeeMapper::toDto)
+                .toList();
     }
 
     @Transactional(readOnly = true)

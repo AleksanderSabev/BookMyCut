@@ -14,18 +14,24 @@ import java.util.List;
 public interface AppointmentRepository extends
         JpaRepository<@NonNull Appointment, @NonNull Long> {
 
-    List<Appointment> findByEmployeeId(Long employeeId);
-
     List<Appointment> findByEmployeeIdAndStartDatetimeBetween(
             Long employeeId,
             LocalDateTime start,
             LocalDateTime end
     );
 
-    boolean existsByEmployeeIdAndStartDatetimeLessThanAndEndDatetimeGreaterThan(
+    boolean existsByEmployeeIdAndStartDatetimeLessThanAndEndDatetimeGreaterThanAndStatusNot(
             Long employeeId,
             LocalDateTime end,
-            LocalDateTime start
+            LocalDateTime start,
+            AppointmentStatus status
+    );
+
+    boolean existsByEmployeeIdAndStartDatetimeLessThanAndEndDatetimeGreaterThanAndStatus(
+            Long employeeId,
+            LocalDateTime end,
+            LocalDateTime start,
+            AppointmentStatus status
     );
 
     List<Appointment >findByStatusAndEndDatetimeBefore(AppointmentStatus status, LocalDateTime dateTime);

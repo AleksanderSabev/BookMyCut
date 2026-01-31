@@ -4,37 +4,34 @@ import jakarta.validation.Valid;
 import lombok.NonNull;
 import org.example.bookmycut.dtos.TimeOffDto;
 import org.example.bookmycut.services.contracts.TimeOffService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController
 @RequestMapping( "/time-offs")
 public class TimeOffController {
 
-    private final String UPDATE_SUCCESSFUL = "Time-off updated successfully.";
-    private final String DELETE_SUCCESSFUL = "Time-off deleted successfully.";
+    private static final String UPDATE_SUCCESSFUL = "Time-off updated successfully.";
+    private static final String DELETE_SUCCESSFUL = "Time-off deleted successfully.";
 
     private final TimeOffService timeOffService;
 
+    @Autowired
     public TimeOffController(TimeOffService timeOffService) {
         this.timeOffService = timeOffService;
     }
 
     @PostMapping()
-    @PreAuthorize("hasRole('ADMIN')")//TODO finish this method
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<@NonNull TimeOffDto> createTimeOff(@Valid @RequestBody TimeOffDto dto) {
         TimeOffDto created = timeOffService.addTimeOff(dto);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(created.getId())
-                .toUri();
-        return ResponseEntity.created(location).body(created);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @GetMapping("/employee/{employeeId}")

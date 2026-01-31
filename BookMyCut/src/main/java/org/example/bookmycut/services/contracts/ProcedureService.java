@@ -4,7 +4,7 @@ import org.example.bookmycut.dtos.ProcedureDto;
 
 import java.util.List;
 
-public interface ProcedureCatalogService {
+public interface ProcedureService {
 
     ProcedureDto createProcedure(ProcedureDto procedureDto);
 

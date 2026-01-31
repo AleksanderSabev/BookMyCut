@@ -3,7 +3,7 @@ package org.example.bookmycut.controllers;
 import jakarta.validation.Valid;
 import lombok.NonNull;
 import org.example.bookmycut.dtos.ProcedureDto;
-import org.example.bookmycut.services.contracts.ProcedureCatalogService;
+import org.example.bookmycut.services.contracts.ProcedureService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,14 +13,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/procedures")
-public class ProcedureCatalogController {
+public class ProcedureController {
 
-    private final String UPDATE_SUCCESSFUL = "Procedure updated successfully.";
-    private final String DELETE_SUCCESSFUL = "Procedure deleted successfully.";
+    private static final String UPDATE_SUCCESSFUL = "Procedure updated successfully.";
+    private static final String DELETE_SUCCESSFUL = "Procedure deleted successfully.";
 
-    private final ProcedureCatalogService procedureService;
+    private final ProcedureService procedureService;
 
-    public ProcedureCatalogController(ProcedureCatalogService procedureService) {
+    public ProcedureController(ProcedureService procedureService) {
         this.procedureService = procedureService;
     }
 

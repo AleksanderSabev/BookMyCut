@@ -5,11 +5,13 @@ import org.example.bookmycut.models.EmployeeSchedule;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface EmployeeScheduleRepository
         extends JpaRepository<@NonNull EmployeeSchedule, @NonNull Long> {
 
@@ -52,5 +54,8 @@ public interface EmployeeScheduleRepository
     );
 
 
+
     List<EmployeeSchedule> findByEmployeeIdOrderByDayOfWeekAscStartTimeAsc(Long employeeId);
+
+    boolean existsByEmployeeIdAndDayOfWeek(Long employeeId, int dayOfWeek);
 }

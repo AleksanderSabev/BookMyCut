@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 public class CustomUserDetails implements UserDetails {
 
-    private final String ROLE_NULL = "Role cannot be null.";
+    private static final String ROLE_NULL = "Role cannot be null.";
 
     private final Long id;
     private final String username;

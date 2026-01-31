@@ -3,6 +3,7 @@ package org.example.bookmycut.services.auth;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.example.bookmycut.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,8 @@ import javax.crypto.SecretKey;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 @Service
@@ -19,9 +22,14 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    public String generateToken(String username) {
+    public String generateToken(CustomUserDetails userDetails) {
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("userId", userDetails.getId());
+        extraClaims.put("role", userDetails.getRole().name());
+
         return Jwts.builder()
-                .subject(username)
+                .claims(extraClaims)
+                .subject(userDetails.getUsername())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1_800_000))
                 .signWith(getKey())
@@ -35,6 +43,11 @@ public class JwtService {
                 .parseSignedClaims(token)
                 .getPayload()
                 .getSubject();
+    }
+
+    public Long extractUserId(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("userId", Long.class);
     }
 
     public Date extractExpiration(String token) {

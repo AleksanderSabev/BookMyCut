@@ -1,13 +1,14 @@
 package org.example.bookmycut.services;
 
 import org.example.bookmycut.dtos.ProcedureDto;
+import org.example.bookmycut.exceptions.DuplicateEntityException;
 import org.example.bookmycut.exceptions.EntityNotFoundException;
 import org.example.bookmycut.exceptions.EntityHasAppointmentsException;
 import org.example.bookmycut.helpers.mappers.ProcedureMapper;
 import org.example.bookmycut.models.Procedure;
 import org.example.bookmycut.repositories.AppointmentRepository;
 import org.example.bookmycut.repositories.ProcedureRepository;
-import org.example.bookmycut.services.contracts.ProcedureCatalogService;
+import org.example.bookmycut.services.contracts.ProcedureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class ProcedureCatalogServiceImpl implements ProcedureCatalogService {
+public class ProcedureServiceImpl implements ProcedureService {
 
     private final ProcedureRepository procedureRepository;
 
@@ -24,8 +25,8 @@ public class ProcedureCatalogServiceImpl implements ProcedureCatalogService {
     private final ProcedureMapper mapper;
 
     @Autowired
-    public ProcedureCatalogServiceImpl(ProcedureRepository procedureRepository, AppointmentRepository appointmentRepository,
-                                       ProcedureMapper mapper) {
+    public ProcedureServiceImpl(ProcedureRepository procedureRepository, AppointmentRepository appointmentRepository,
+                                ProcedureMapper mapper) {
         this.procedureRepository = procedureRepository;
         this.appointmentRepository = appointmentRepository;
         this.mapper = mapper;
@@ -34,6 +35,10 @@ public class ProcedureCatalogServiceImpl implements ProcedureCatalogService {
     @Transactional
     @Override
     public ProcedureDto createProcedure(ProcedureDto procedureDto) {
+        if(procedureRepository.existsByName(procedureDto.getName())){
+            throw new DuplicateEntityException("Procedure", "name", procedureDto.getName());
+        }
+
         Procedure procedure = mapper.toEntity(procedureDto);
 
         return mapper.toDto(procedureRepository.save(procedure));

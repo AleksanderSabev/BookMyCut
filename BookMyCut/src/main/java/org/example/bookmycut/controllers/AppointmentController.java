@@ -6,6 +6,7 @@ import org.example.bookmycut.dtos.appointment.AppointmentRequestDto;
 import org.example.bookmycut.dtos.appointment.AppointmentResponseDto;
 import org.example.bookmycut.helpers.security.SecurityUtils;
 import org.example.bookmycut.services.contracts.AppointmentService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ import java.util.List;
 @RequestMapping("/appointments")
 public class AppointmentController {
 
-    private final String SUCCESSFUL_APPOINTMENT_CANCELLATION = "Appointment cancelled successfully.";
+    private static final String SUCCESSFUL_APPOINTMENT_CANCELLATION = "Appointment cancelled successfully.";
 
     private final AppointmentService appointmentService;
 
@@ -27,9 +28,10 @@ public class AppointmentController {
 
     @PostMapping
     @PreAuthorize("isAuthenticated()")
-    public AppointmentResponseDto bookAppointment(@Valid @RequestBody AppointmentRequestDto dto) {
+    public ResponseEntity<@NonNull AppointmentResponseDto> bookAppointment(@Valid @RequestBody AppointmentRequestDto dto) {
         Long userId = SecurityUtils.getCurrentUserId();
-        return appointmentService.bookAppointment(userId, dto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(appointmentService.bookAppointment(userId, dto));
     }
 
     @DeleteMapping("/{id}")

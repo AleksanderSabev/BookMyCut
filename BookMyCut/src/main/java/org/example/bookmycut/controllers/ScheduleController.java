@@ -16,8 +16,8 @@ import java.util.List;
 @RequestMapping("/schedules")
 public class ScheduleController {
 
-    private final String UPDATE_SUCCESSFUL = "Schedule updated successfully.";
-    private final String DELETE_SUCCESSFUL = "Schedule deleted successfully.";
+    private static final String UPDATE_SUCCESSFUL = "Schedule updated successfully.";
+    private static final String DELETE_SUCCESSFUL = "Schedule deleted successfully.";
 
     private final ScheduleService scheduleService;
 

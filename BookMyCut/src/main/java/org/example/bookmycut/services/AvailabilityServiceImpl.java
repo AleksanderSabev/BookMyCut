@@ -1,5 +1,6 @@
 package org.example.bookmycut.services;
 
+import org.example.bookmycut.enums.AppointmentStatus;
 import org.example.bookmycut.exceptions.EmployeeUnavailableException;
 import org.example.bookmycut.models.EmployeeSchedule;
 import org.example.bookmycut.repositories.AppointmentRepository;
@@ -19,9 +20,9 @@ import java.util.List;
 @Service
 public class AvailabilityServiceImpl implements AvailabilityService {
 
-    private final int TIME_SLOT_MINUTES = 15;
-    private final String NOT_WORKING = "Not working this day!";
-    private final String START_AFTER_END = "Start time must be before end time!";
+    private static final int TIME_SLOT_MINUTES = 15;
+    private static final String NOT_WORKING = "Not working this day!";
+    private static final String START_AFTER_END = "Start time must be before end time!";
 
     private final EmployeeScheduleRepository scheduleRepository;
     private final EmployeeTimeOffRepository timeOffRepository;
@@ -41,6 +42,7 @@ public class AvailabilityServiceImpl implements AvailabilityService {
         if(!start.isBefore(end)){
             throw new IllegalArgumentException(START_AFTER_END);
         }
+
         DayOfWeek dayOfWeek = start.getDayOfWeek();
 
         EmployeeSchedule daySchedule = scheduleRepository.findByEmployeeIdAndDayOfWeek(employeeId, dayOfWeek.getValue())
@@ -53,7 +55,12 @@ public class AvailabilityServiceImpl implements AvailabilityService {
                 .existsByEmployeeIdAndStartDateTimeLessThanAndEndDateTimeGreaterThan(employeeId, end, start)) return false;
 
         if(appointmentRepository
-                .existsByEmployeeIdAndStartDatetimeLessThanAndEndDatetimeGreaterThan(employeeId, end, start)) return false;
+                .existsByEmployeeIdAndStartDatetimeLessThanAndEndDatetimeGreaterThanAndStatusNot(
+                        employeeId,
+                        end,
+                        start,
+                        AppointmentStatus.CANCELLED))
+            return false;
 
         return true;
     }

@@ -24,7 +24,7 @@ public class EmployeeScheduleMapper {
 
         return new ScheduleDto(
                 entity.getId(),
-                entity.getId(),
+                entity.getEmployee().getId(),
                 entity.getDayOfWeek(),
                 entity.getStartTime(),
                 entity.getEndTime()

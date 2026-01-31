@@ -16,11 +16,11 @@ import java.util.List;
 @RequestMapping("/users")
 public class AppUserController {
 
-    private  final String USER_UPDATED_SUCCESSFULLY = "User info updated successfully!.";
-    private  final String USER_REMOVED_SUCCESSFULLY = "User removed successfully!.";
-    private  final String PASSWORD_UPDATED_SUCCESSFULLY = "Your password has been updated successfully.";
-    private  final String USER_PROMOTED_SUCCESSFULLY = "User with ID %d is now ADMIN.";
-    private  final String USER_DEMOTED_SUCCESSFULLY = "User with ID %d is now CLIENT.";
+    private static final String USER_UPDATED_SUCCESSFULLY = "User info updated successfully!.";
+    private static   final String USER_REMOVED_SUCCESSFULLY = "User removed successfully!.";
+    private static final String PASSWORD_UPDATED_SUCCESSFULLY = "Your password has been updated successfully.";
+    private static final String USER_PROMOTED_SUCCESSFULLY = "User with ID %d is now ADMIN.";
+    private static final String USER_DEMOTED_SUCCESSFULLY = "User with ID %d is now CLIENT.";
 
     private final AppUserService userService;
 
@@ -35,7 +35,7 @@ public class AppUserController {
     }
 
     @GetMapping("/me")
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("isAuthenticated()")
     public AppUserDto getLoggedUser(){
         Long userId = SecurityUtils.getCurrentUserId();
         return userService.getUserById(userId);

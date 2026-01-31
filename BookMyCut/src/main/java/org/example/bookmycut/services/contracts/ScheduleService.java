@@ -16,6 +16,7 @@ public interface ScheduleService {
 
     void updateSchedule(ScheduleDto scheduleDTO);
 
+    boolean isEmployeeWorkingOnDay(Long employeeId, DayOfWeek dayOfWeek);
 
     ScheduleDto getScheduleForEmployeeByDay(Long employeeId, DayOfWeek dayOfWeek);
 

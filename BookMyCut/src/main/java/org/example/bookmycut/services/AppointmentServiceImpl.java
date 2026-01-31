@@ -17,6 +17,7 @@ import org.example.bookmycut.repositories.EmployeeRepository;
 import org.example.bookmycut.repositories.ProcedureRepository;
 import org.example.bookmycut.services.contracts.AppointmentService;
 import org.example.bookmycut.services.contracts.AvailabilityService;
+import org.example.bookmycut.services.contracts.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -29,8 +30,10 @@ import java.util.List;
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
 
-    private final String PROCEDURE_NOT_IN_THE_EMPLOYEES_LIST = "This employee can't perform this procedure!";
-    private final String EMPLOYEE_UNAVAILABLE = "Employee is not available this time!";
+    private static final String PROCEDURE_NOT_IN_THE_EMPLOYEES_LIST = "This employee can't perform this procedure!";
+    private static final String EMPLOYEE_UNAVAILABLE = "Employee is not available this time!";
+    private static final String INCORRECT_STATUS_MESSAGE = "Only scheduled appointments can be cancelled.";
+    private static final String EMPLOYEE_NOT_WORKING = "Employee is working on this day!";
 
     private final AppointmentRepository appointmentRepository;
     private final EmployeeRepository employeeRepository;
@@ -38,15 +41,17 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AvailabilityService availabilityService;
     private final AppUserRepository userRepository;
     private final AppointmentMapper appointmentMapper;
+    private final ScheduleService scheduleService;
 
     @Autowired
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, EmployeeRepository employeeRepository, ProcedureRepository procedureRepository, AvailabilityService availabilityService, AppUserRepository userRepository, AppointmentMapper appointmentMapper) {
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, EmployeeRepository employeeRepository, ProcedureRepository procedureRepository, AvailabilityService availabilityService, AppUserRepository userRepository, AppointmentMapper appointmentMapper, ScheduleService scheduleService) {
         this.appointmentRepository = appointmentRepository;
         this.employeeRepository = employeeRepository;
         this.procedureRepository = procedureRepository;
         this.availabilityService = availabilityService;
         this.userRepository = userRepository;
         this.appointmentMapper = appointmentMapper;
+        this.scheduleService = scheduleService;
     }
 
     @Transactional
@@ -54,6 +59,10 @@ public class AppointmentServiceImpl implements AppointmentService {
     public AppointmentResponseDto bookAppointment(Long userId, AppointmentRequestDto dto) {
         Employee employee = employeeRepository.findById(dto.getEmployeeId())
                 .orElseThrow(() -> new EntityNotFoundException("Employee", dto.getEmployeeId()));
+
+        if(!scheduleService.isEmployeeWorkingOnDay(employee.getId(), dto.getStartDateTime().getDayOfWeek())){
+            throw new EmployeeUnavailableException(EMPLOYEE_NOT_WORKING);
+        }
 
         Procedure procedure = procedureRepository.findById(dto.getProcedureId())
                 .orElseThrow(() -> new EntityNotFoundException("Procedure", dto.getProcedureId()));
@@ -83,6 +92,10 @@ public class AppointmentServiceImpl implements AppointmentService {
     public void cancelAppointment(Long appointmentId, Long userId) {
         Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new EntityNotFoundException("Appointment", appointmentId));
+
+        if (!appointment.getStatus().equals(AppointmentStatus.SCHEDULED)) {
+            throw new IllegalStateException(INCORRECT_STATUS_MESSAGE);
+        }
 
         if(!appointment.getUser().getId().equals(userId)){
             throw new UnauthorizedOperationException();

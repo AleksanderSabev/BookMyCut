@@ -1,6 +1,7 @@
 package org.example.bookmycut.services;
 
 import org.example.bookmycut.dtos.TimeOffDto;
+import org.example.bookmycut.enums.AppointmentStatus;
 import org.example.bookmycut.exceptions.EntityHasAppointmentsException;
 import org.example.bookmycut.exceptions.EntityNotFoundException;
 import org.example.bookmycut.exceptions.TimeOverlapException;
@@ -21,8 +22,8 @@ import java.util.List;
 @Service
 public class TimeOffServiceImpl implements TimeOffService {
 
-    private final String START_BEFORE_END_MESSAGE = "Start time must be before end time";
-    private final String OVERLAP_MESSAGE = "This employee already has time off in this range";
+    private static final String START_BEFORE_END_MESSAGE = "Start time must be before end time";
+    private static final String OVERLAP_MESSAGE = "This employee already has time off in this range";
 
     private final EmployeeTimeOffRepository timeOffRepository;
     private final AppointmentRepository appointmentRepository;
@@ -105,7 +106,7 @@ public class TimeOffServiceImpl implements TimeOffService {
             throw new EntityNotFoundException("Employee", employeeId);
         }
 
-        return timeOffRepository.findByEmployeeId(employeeId)
+        return timeOffRepository.findByEmployeeIdOrderByStartDateTimeAsc(employeeId)
                 .stream()
                 .map(timeOffMapper::toDto)
                 .toList();
@@ -136,10 +137,11 @@ public class TimeOffServiceImpl implements TimeOffService {
     }
 
     protected boolean hasAppointmentsDuringTimeOff(TimeOffDto dto, Employee employee){
-        return appointmentRepository.existsByEmployeeIdAndStartDatetimeLessThanAndEndDatetimeGreaterThan(
+        return appointmentRepository.existsByEmployeeIdAndStartDatetimeLessThanAndEndDatetimeGreaterThanAndStatus(
                 employee.getId(),
                 dto.getEndDateTime(),
-                dto.getStartDateTime()
+                dto.getStartDateTime(),
+                AppointmentStatus.SCHEDULED
         );
     }
 

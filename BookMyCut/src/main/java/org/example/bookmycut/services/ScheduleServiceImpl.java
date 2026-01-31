@@ -19,9 +19,9 @@ import java.util.List;
 @Service
 public class ScheduleServiceImpl implements ScheduleService {
 
-    private final String OVERLAP_MESSAGE = "The new schedule overlaps with an existing schedule for this employee.";
+    private static final String OVERLAP_MESSAGE = "The new schedule overlaps with an existing schedule for this employee.";
 
-    private final String START_BEFORE_END_MESSAGE = "Start time must be before end time";
+    private static final String START_BEFORE_END_MESSAGE = "Start time must be before end time";
 
     private final EmployeeScheduleRepository scheduleRepository;
 
@@ -102,7 +102,12 @@ public class ScheduleServiceImpl implements ScheduleService {
         schedule.setStartTime(scheduleDTO.getStartTime());
         schedule.setEndTime(scheduleDTO.getEndTime());
 
-        EmployeeSchedule saved = scheduleRepository.save(schedule);
+        scheduleRepository.save(schedule);
+    }
+
+    @Override
+    public boolean isEmployeeWorkingOnDay(Long employeeId, DayOfWeek dayOfWeek) {
+        return scheduleRepository.existsByEmployeeIdAndDayOfWeek(employeeId, dayOfWeek.getValue());
     }
 
 

@@ -32,10 +32,10 @@ public class Procedure {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @ManyToMany(mappedBy = "services")
+    @ManyToMany(mappedBy = "procedures")
     private List<Employee> employees;
 
-    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "procedure", cascade = CascadeType.ALL)
     private List<Appointment> appointments;
 
     public Procedure(String name,

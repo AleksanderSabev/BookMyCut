@@ -5,20 +5,22 @@ import lombok.NonNull;
 import org.example.bookmycut.dtos.EmployeeDto;
 import org.example.bookmycut.dtos.ProcedureDto;
 import org.example.bookmycut.services.contracts.EmployeeService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
 @RequestMapping("/employees")
 public class EmployeeController {
 
-    private final String UPDATE_SUCCESSFUL = "Employee updated successfully.";
-    private final String DELETE_SUCCESSFUL = "Employee deleted successfully.";
-    private final String PROCEDURE_ASSIGNED = "Procedure assigned to employee successfully.";
+    private static final String UPDATE_SUCCESSFUL = "Employee updated successfully.";
+    private static final String DELETE_SUCCESSFUL = "Employee deleted successfully.";
+    private static final String PROCEDURE_ASSIGNED = "Procedure assigned to employee successfully.";
 
     private final EmployeeService employeeService;
 
@@ -39,10 +41,32 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeService.getEmployeeById(id));
     }
 
+
     @GetMapping
     @PreAuthorize("isAuthenticated()")
     public List<EmployeeDto> getAllEmployees() {
         return employeeService.getAllEmployees();
+    }
+
+
+    @GetMapping("/by-procedure/{procedureId}")
+    public ResponseEntity<@NonNull List<EmployeeDto>> getEmployeesByProcedure(@PathVariable Long procedureId) {
+        List<EmployeeDto> employees = employeeService.getEmployeesByProcedure(procedureId);
+        return ResponseEntity.ok(employees);
+    }
+
+
+    @GetMapping("/working-on")
+    public ResponseEntity<@NonNull List<EmployeeDto>> getWorkingEmployees(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+
+        List<EmployeeDto> employees = employeeService.getWorkingEmployees(date);
+        return ResponseEntity.ok(employees);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<@NonNull List<EmployeeDto>> searchEmployees(@RequestParam String name) {
+        return ResponseEntity.ok(employeeService.getEmployeesByName(name));
     }
 
     @PutMapping("/{id}")
