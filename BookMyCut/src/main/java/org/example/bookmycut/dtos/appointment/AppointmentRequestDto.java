@@ -1,7 +1,7 @@
 package org.example.bookmycut.dtos.appointment;
 
 import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,13 +18,13 @@ public class AppointmentRequestDto {
     public static final String START_TIME_REQUIRED = "Start time is required";
     public static final String START_TIME_FUTURE = "Start time must be in the future";
 
-    @NotBlank(message = EMPLOYEE_REQUIRED)
+    @NotNull(message = EMPLOYEE_REQUIRED)
     private Long employeeId;
 
-    @NotBlank(message = PROCEDURE_REQUIRED)
+    @NotNull(message = PROCEDURE_REQUIRED)
     private Long procedureId;
 
-    @NotBlank(message = START_TIME_REQUIRED)
+    @NotNull(message = START_TIME_REQUIRED)
     @Future(message = START_TIME_FUTURE)
     private LocalDateTime startDateTime;
 }

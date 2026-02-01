@@ -73,6 +73,5 @@ public class Employee {
 
     public void cancelAppointment(Appointment appointment) {
         appointments.remove(appointment);
-        appointment.setEmployee(null);
     }
 }

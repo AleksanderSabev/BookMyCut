@@ -17,7 +17,8 @@ public class AppointmentMapper {
                 appointment.getProcedure().getName(),
                 appointment.getUser().getUsername(),
                 appointment.getStartDatetime(),
-                appointment.getEndDatetime());
+                appointment.getEndDatetime(),
+                appointment.getStatus());
     }
 
     public Appointment toEntity(AppointmentRequestDto dto, AppUser user, Employee employee, Procedure procedure) {

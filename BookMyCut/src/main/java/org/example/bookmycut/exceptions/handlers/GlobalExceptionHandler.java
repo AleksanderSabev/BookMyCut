@@ -20,7 +20,6 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Дефиниране на константи за съобщенията
     private static final String MSG_INVALID_CREDENTIALS = "Invalid username or password.";
     private static final String MSG_ACCESS_DENIED = "Access denied: You do not have permission to access this resource.";
     private static final String MSG_UNEXPECTED_ERROR = "An unexpected server error occurred.";

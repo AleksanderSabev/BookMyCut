@@ -25,6 +25,7 @@ public class AppUserMapper {
         dto.setId(entity.getId());
         dto.setUsername(entity.getUsername());
         dto.setEmail(entity.getEmail());
+        dto.setRole(entity.getRole());
 
 
         return dto;
