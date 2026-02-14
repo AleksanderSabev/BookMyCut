@@ -80,7 +80,19 @@ The backend is designed to be consumed by a **Single Page Application (SPA)** fr
 - Backend implemented
 - JWT & security complete
 - Role-based authorization enforced
-- SPA frontend in progress
+- SPA frontend implemented (React + Vite in `/frontend`)
+
+---
+
+## 🖥 Frontend
+
+The frontend is a React SPA in the `frontend/` directory.
+
+```bash
+cd frontend && npm install && npm run dev
+```
+
+Runs at http://localhost:5173. Requires the backend at http://localhost:8080.
 
 ---
 

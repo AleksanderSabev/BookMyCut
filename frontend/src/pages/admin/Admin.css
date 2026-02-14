@@ -1,0 +1,306 @@
+.admin-page {
+  animation: fadeUp 0.4s ease;
+}
+
+.admin-page h2 {
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+}
+
+.admin-page h2::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 1px;
+  margin-top: 0.5rem;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+}
+
+.admin-page .error {
+  color: var(--color-error);
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: var(--radius-sm);
+}
+
+.admin-layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-form-card {
+  background: var(--color-bg-card);
+  padding: 1.5rem;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+  position: sticky;
+  top: 1rem;
+}
+
+.admin-form-card h3 {
+  margin-bottom: 1rem;
+  color: var(--color-text);
+}
+
+.admin-form-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-form-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.admin-form-card input,
+.admin-form-card select {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-dark);
+  color: var(--color-text);
+}
+
+.admin-form-card input:focus,
+.admin-form-card select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.checkbox-row {
+  flex-direction: row;
+  align-items: center;
+}
+
+.checkbox-row input {
+  margin-right: 0.5rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.admin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mb {
+  margin-bottom: 0.5rem;
+  align-self: flex-start;
+}
+
+.admin-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.admin-row:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.admin-row span {
+  flex: 1;
+  color: var(--color-text-muted);
+}
+
+.btn-link {
+  background: none;
+  color: var(--color-text-muted);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.9rem;
+}
+
+.btn-link:hover {
+  color: var(--color-text);
+  text-decoration: underline;
+}
+
+.btn-link.danger {
+  color: var(--color-error);
+}
+
+.admin-list .empty {
+  color: var(--color-text-muted);
+  font-style: italic;
+  padding: 1rem;
+}
+
+/* Admin Employees - expandable details */
+.admin-employees-list {
+  gap: 0;
+}
+
+.admin-employee-block {
+  margin-bottom: 0.75rem;
+}
+
+.admin-employee-row {
+  flex-wrap: wrap;
+}
+
+.employee-details {
+  padding: 1rem 1.25rem;
+  background: var(--color-bg-dark);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  margin-top: 0.5rem;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.employee-schedule h4,
+.employee-appointments h4,
+.employee-timeoffs h4 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  color: var(--color-text);
+}
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 0.5rem;
+}
+
+.schedule-day {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.5rem;
+  background: var(--color-bg-card);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  border: 1px solid var(--color-border);
+}
+
+.day-name {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.day-times {
+  color: var(--color-text-muted);
+}
+
+.day-off {
+  color: var(--color-text-muted);
+  opacity: 0.7;
+}
+
+.employee-timeoffs {
+  padding: 0;
+}
+
+.timeoff-list {
+  margin: 0 0 0.75rem;
+  padding-left: 1.25rem;
+}
+
+.timeoff-list li {
+  margin-bottom: 0.5rem;
+  color: var(--color-text-muted);
+}
+
+.timeoff-reason {
+  font-style: italic;
+  opacity: 0.9;
+}
+
+.timeoff-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 1rem;
+  margin-top: 0.75rem;
+}
+
+.timeoff-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.timeoff-form label span {
+  font-weight: 500;
+}
+
+.timeoff-form input {
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-bg-card);
+  color: var(--color-text);
+}
+
+.timeoff-form .form-actions {
+  grid-column: 1 / -1;
+}
+
+.employee-appointments label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.employee-appointments label span {
+  flex: none;
+}
+
+.employee-appointments input[type="date"] {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-bg-card);
+  color: var(--color-text);
+}
+
+.appointments-for-day ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.appointments-for-day li {
+  margin-bottom: 0.35rem;
+  color: var(--color-text-muted);
+}
+
+.badge.cancelled {
+  margin-left: 0.5rem;
+  color: var(--color-error);
+  font-size: 0.85em;
+}
+
+.muted {
+  color: var(--color-text-muted);
+  opacity: 0.8;
+  font-size: 0.9rem;
+}

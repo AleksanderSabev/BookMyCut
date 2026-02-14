@@ -1,0 +1,205 @@
+.book-page {
+  animation: fadeUp 0.4s ease;
+}
+
+.book-page h2 {
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+}
+
+.book-page h2::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 1px;
+  margin-top: 0.5rem;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+}
+
+.book-steps {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.book-steps .step {
+  color: var(--color-text-muted);
+  opacity: 0.6;
+}
+
+.book-steps .step.active {
+  opacity: 1;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.book-section {
+  background: var(--color-bg-card);
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+}
+
+.book-section .back {
+  background: none;
+  color: var(--color-text-muted);
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.book-section .back:hover {
+  color: var(--color-text);
+  text-decoration: underline;
+}
+
+.book-section h3 {
+  margin-bottom: 1rem;
+  color: var(--color-text);
+}
+
+.procedure-select,
+.employee-select {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.procedure-option,
+.employee-option {
+  padding: 1rem 1.25rem;
+  text-align: left;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-dark);
+  color: var(--color-text);
+  transition: all var(--transition);
+}
+
+.procedure-option:hover,
+.employee-option:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.procedure-option.selected,
+.employee-option.selected {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: var(--color-bg-elevated);
+}
+
+.procedure-option .name,
+.employee-option .name {
+  display: block;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.procedure-option .meta,
+.employee-option .meta {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin-top: 0.25rem;
+}
+
+.book-section label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.book-section input[type="date"] {
+  padding: 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  max-width: 200px;
+  background: var(--color-bg-dark);
+  color: var(--color-text);
+}
+
+.book-section input[type="date"]:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.slot-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.slot-option {
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-dark);
+  color: var(--color-text);
+  min-width: 80px;
+  transition: all var(--transition);
+}
+
+.slot-option:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.slot-option.selected {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: var(--color-bg-elevated);
+}
+
+.book-actions {
+  margin-top: 1.5rem;
+}
+
+.book-page .error {
+  color: var(--color-error);
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: var(--radius-sm);
+}
+
+.book-page .empty {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.success-card {
+  background: var(--color-bg-card);
+  padding: 2.5rem;
+  border-radius: var(--radius-xl);
+  text-align: center;
+  max-width: 440px;
+  margin: 2rem auto;
+  border: 1px solid var(--color-border);
+  animation: fadeUp 0.4s ease;
+}
+
+.success-card::before {
+  content: '✓';
+  display: block;
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto 1rem;
+  line-height: 3rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-success);
+  background: rgba(34, 197, 94, 0.15);
+  border-radius: 50%;
+}
+
+.success-card h2 {
+  color: var(--color-success);
+  margin-bottom: 1rem;
+}
+
+.success-card p {
+  color: var(--color-text-muted);
+  margin-bottom: 1.5rem;
+}

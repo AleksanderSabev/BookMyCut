@@ -41,8 +41,6 @@ public class AuthServiceImpl implements AuthService {
 
         System.out.println("DEBUG: Postman password: " + dto.getPassword());
         userRepository.findByUsername(dto.getUsername()).ifPresent(u -> {
-            System.out.println("DEBUG: DB Password hash: [" + u.getPassword() + "]");
-            System.out.println("DEBUG: Match? " + passwordEncoder.matches(dto.getPassword(), u.getPassword()));
         });
 
         Authentication authentication = authenticationManager.authenticate(

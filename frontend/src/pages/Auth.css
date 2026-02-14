@@ -1,0 +1,77 @@
+.auth-card {
+  max-width: 420px;
+  margin: 2rem auto;
+  padding: 2.5rem;
+  background: var(--color-bg-card);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+  animation: fadeUp 0.4s ease;
+}
+
+.auth-card h2 {
+  margin-bottom: 1.5rem;
+  color: var(--color-text);
+}
+
+.auth-card h2::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 1px;
+  margin-top: 0.5rem;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+}
+
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.auth-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.auth-card input {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  background: var(--color-bg-dark);
+  color: var(--color-text);
+}
+
+.auth-card input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-block {
+  width: 100%;
+  padding: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.auth-card .error {
+  color: var(--color-error);
+  font-size: 0.9rem;
+  margin: 0;
+  padding: 0.75rem;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: var(--radius-sm);
+}
+
+.auth-footer {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.auth-footer a {
+  color: var(--color-text);
+}
