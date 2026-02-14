@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -96,10 +97,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (!employee.getEmail().equals(dto.getEmail()) && employeeRepository.existsByEmail(dto.getEmail())) {
             throw new DuplicateEntityException("Employee", "email", dto.getEmail());
         }
+        employee.getProcedures().clear();
 
         employee.setName(dto.getName());
         employee.setEmail(dto.getEmail());
         employee.setPhone(dto.getPhone());
+        employee.setProcedures(dto.getProcedureIds().stream().map(p -> procedureRepository.findById(p)
+                .orElseThrow(() -> new EntityNotFoundException("Procedure", p))).collect(Collectors.toList()));
 
         employeeRepository.save(employee);
     }
